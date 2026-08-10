@@ -1,0 +1,227 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "category": "General",
+      "patterns": [
+        "Hi",
+        "Hello",
+        "Hey",
+        "Good morning",
+        "Good afternoon",
+        "Greetings",
+        "Is anyone there?",
+        "Hi chatbot"
+      ],
+      "responses": [
+        "Hello! Welcome to the Student Query Portal. How can I assist you today with courses, fees, timings, or admissions?",
+        "Hi there! I am your AI Student Assistant. Ask me anything about course details, schedules, fees, or contact info!",
+        "Greetings! How can I help you with your academic queries today?"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "category": "General",
+      "patterns": [
+        "Bye",
+        "Goodbye",
+        "See you later",
+        "Quit",
+        "Exit",
+        "Stop",
+        "Close chatbot",
+        "Have a good day"
+      ],
+      "responses": [
+        "Goodbye! Have a great day ahead and best of luck with your studies!",
+        "Thank you for visiting the Student Query Portal. Goodbye!",
+        "Farewell! Feel free to return if you have more questions."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "category": "General",
+      "patterns": [
+        "Thanks",
+        "Thank you",
+        "That's helpful",
+        "Awesome thanks",
+        "Thank you so much",
+        "Appreciate it"
+      ],
+      "responses": [
+        "You're very welcome! Let me know if you need anything else.",
+        "Glad I could help! Happy learning!",
+        "Anytime! Feel free to ask more questions."
+      ]
+    },
+    {
+      "tag": "courses_offered",
+      "category": "Courses",
+      "patterns": [
+        "What courses do you offer?",
+        "List of available courses",
+        "Which degrees are available?",
+        "Tell me about undergraduate programs",
+        "What postgraduate courses are offered?",
+        "Can I study B.Tech or B.Sc here?",
+        "What programs are available?"
+      ],
+      "responses": [
+        "We offer Undergraduate (B.Tech Computer Science, B.Sc Data Science, BBA, BCA) and Postgraduate (M.Tech AI, MCA, MBA) programs along with specialized Diploma courses."
+      ]
+    },
+    {
+      "tag": "course_duration",
+      "category": "Courses",
+      "patterns": [
+        "How long are the courses?",
+        "What is the duration of B.Tech?",
+        "Duration of MCA degree",
+        "How many years does MBA take?",
+        "Course length for undergraduate degrees"
+      ],
+      "responses": [
+        "Undergraduate engineering (B.Tech) programs are 4 years. B.Sc, BCA, and BBA are 3-year programs. Postgraduate degrees (M.Tech, MCA, MBA) take 2 years."
+      ]
+    },
+    {
+      "tag": "course_eligibility",
+      "category": "Admissions",
+      "patterns": [
+        "What is the eligibility criteria?",
+        "Who can apply for B.Tech?",
+        "Eligibility for MCA program",
+        "What marks are required for admission?",
+        "Admission criteria for undergraduate courses"
+      ],
+      "responses": [
+        "For B.Tech/B.Sc: Minimum 60% aggregate in 10+2 with Mathematics/Physics. For MCA/MBA: Bachelor's degree in relevant discipline with at least 55% aggregate marks."
+      ]
+    },
+    {
+      "tag": "fee_structure",
+      "category": "Fees",
+      "patterns": [
+        "What is the fee structure?",
+        "How much are the tuition fees?",
+        "Fee per semester for B.Tech",
+        "What is the cost of studying MCA?",
+        "Tell me about total course fees",
+        "Is there an installment option for fees?"
+      ],
+      "responses": [
+        "Tuition fees are approximately ₹45,000 per semester for B.Tech, ₹35,000 per semester for BCA/B.Sc, and ₹50,000 per semester for MCA/MBA. Installment options are available."
+      ]
+    },
+    {
+      "tag": "scholarships",
+      "category": "Fees",
+      "patterns": [
+        "Are scholarships available?",
+        "How can I apply for a scholarship?",
+        "Merit scholarship criteria",
+        "Is financial assistance provided?",
+        "Fee waiver options for top students"
+      ],
+      "responses": [
+        "Yes! Merit-based scholarships up to 50% tuition waiver are awarded to students scoring over 90% in qualifying entrance exams. Need-based aid is also available."
+      ]
+    },
+    {
+      "tag": "class_timings",
+      "category": "Timings",
+      "patterns": [
+        "What are the class timings?",
+        "College hours",
+        "When do lectures start and end?",
+        "Morning shift and evening shift timing",
+        "What time does college open?"
+      ],
+      "responses": [
+        "Regular classes run from Monday to Friday, 9:00 AM to 4:30 PM. Lab sessions are scheduled between 1:30 PM and 4:30 PM."
+      ]
+    },
+    {
+      "tag": "library_timings",
+      "category": "Timings",
+      "patterns": [
+        "What are the library hours?",
+        "Is the library open on weekends?",
+        "When does the library close?",
+        "Library opening time"
+      ],
+      "responses": [
+        "The Central Library is open Monday to Saturday from 8:00 AM to 8:00 PM. During examination months, it remains open 24/7."
+      ]
+    },
+    {
+      "tag": "exam_schedule",
+      "category": "Exams",
+      "patterns": [
+        "When are the semester exams held?",
+        "Exam schedule",
+        "Mid-term examination dates",
+        "Where can I find the exam timetable?",
+        "When do final exams start?"
+      ],
+      "responses": [
+        "Mid-term exams take place in October (Odd semester) and March (Even semester). End-semester final exams are conducted in December and May. Timetables are published on the Student Portal."
+      ]
+    },
+    {
+      "tag": "contact_info",
+      "category": "Contact",
+      "patterns": [
+        "How can I contact the administration?",
+        "Admission office phone number",
+        "Helpdesk email address",
+        "College phone number and contact details",
+        "Where is the admission office located?"
+      ],
+      "responses": [
+        "You can reach the Student Helpdesk at admissions@university.edu or call +91-1800-555-0199. Office hours: Mon-Fri, 9:00 AM - 5:00 PM."
+      ]
+    },
+    {
+      "tag": "campus_location",
+      "category": "Contact",
+      "patterns": [
+        "Where is the campus located?",
+        "What is the college address?",
+        "How to reach the university campus?",
+        "Campus address details"
+      ],
+      "responses": [
+        "The main campus is located at University Tech Park, Knowledge Corridor, City Center. It is easily accessible via Metro Line 2 (Station: Tech Campus)."
+      ]
+    },
+    {
+      "tag": "hostel_facility",
+      "category": "Facilities",
+      "patterns": [
+        "Is hostel accommodation provided?",
+        "Hostel fees and facilities",
+        "Are there separate hostels for boys and girls?",
+        "How to book a hostel room?"
+      ],
+      "responses": [
+        "Yes, separate high-security hostels with Wi-Fi, mess facilities, and AC/non-AC rooms are available for boys and girls. Hostel fee ranges from ₹30,000 to ₹50,000 per semester."
+      ]
+    },
+    {
+      "tag": "placements",
+      "category": "Placements",
+      "patterns": [
+        "What is the placement record?",
+        "Top recruiting companies",
+        "Average salary package offered",
+        "Is there placement assistance provided?",
+        "Highest placement package"
+      ],
+      "responses": [
+        "Our placement cell has a 92% placement record. Top recruiters include Google, Microsoft, TCS, Infosys, and Amazon. The average package is ₹6.5 LPA, with a highest package of ₹42 LPA."
+      ]
+    }
+  ]
+}

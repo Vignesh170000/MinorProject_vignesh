@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Query AI Assistant | Interactive Smart Chatbot</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Root static path for direct file viewing -->
+    <link rel="stylesheet" href="./static/style.css">
+</head>
+<body class="theme-dark">
+    <div class="background-globes">
+        <div class="globe globe-1"></div>
+        <div class="globe globe-2"></div>
+        <div class="globe globe-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-header">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-info">
+                    <h2>EduQuery AI</h2>
+                    <span class="status-badge" id="serverStatusBadge">
+                        <span class="status-dot"></span> Ready & Interactive
+                    </span>
+                </div>
+            </div>
+
+            <!-- Search Sidebar -->
+            <div class="sidebar-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search topics or questions...">
+            </div>
+
+            <div class="sidebar-section">
+                <h3><i class="fa-solid fa-layer-group"></i> Query Categories</h3>
+                <div class="category-pills" id="categoryPills">
+                    <button class="cat-pill active" data-category="All"><i class="fa-solid fa-border-all"></i> All Topics</button>
+                    <button class="cat-pill" data-category="Courses"><i class="fa-solid fa-book-open"></i> Courses</button>
+                    <button class="cat-pill" data-category="Fees"><i class="fa-solid fa-wallet"></i> Fees & Aid</button>
+                    <button class="cat-pill" data-category="Timings"><i class="fa-solid fa-clock"></i> Timings</button>
+                    <button class="cat-pill" data-category="Contact"><i class="fa-solid fa-phone"></i> Contact</button>
+                    <button class="cat-pill" data-category="Admissions"><i class="fa-solid fa-id-card"></i> Admissions</button>
+                    <button class="cat-pill" data-category="Exams"><i class="fa-solid fa-file-pen"></i> Exams</button>
+                    <button class="cat-pill" data-category="Facilities"><i class="fa-solid fa-building-columns"></i> Facilities</button>
+                    <button class="cat-pill" data-category="Placements"><i class="fa-solid fa-briefcase"></i> Placements</button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3><i class="fa-solid fa-lightbulb"></i> Suggested Questions</h3>
+                <div class="suggested-questions" id="suggestedList">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button id="viewDatasetBtn" class="btn-secondary">
+                    <i class="fa-solid fa-database"></i> Browse Knowledge Base
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <!-- Header Bar -->
+            <header class="chat-header">
+                <div class="chat-header-title">
+                    <h2>Student Helpdesk AI Chatbot</h2>
+                    <p>Interactive Student Query Portal & NLP Engine</p>
+                </div>
+                <div class="chat-actions">
+                    <button id="themeToggleBtn" class="icon-btn" title="Toggle Theme (Dark / Cyber / Light)">
+                        <i class="fa-solid fa-palette"></i>
+                    </button>
+                    <button id="soundToggleBtn" class="icon-btn active" title="Toggle Sound Effects">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <button id="exportChatBtn" class="icon-btn" title="Export Chat Transcript">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                    <button id="clearChatBtn" class="icon-btn" title="Clear Chat History">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <button id="exitChatBtn" class="btn-danger" title="Exit Session">
+                        <i class="fa-solid fa-power-off"></i> Exit Session
+                    </button>
+                </div>
+            </header>
+
+            <!-- Chat Message Window -->
+            <div class="chat-window" id="chatWindow">
+                <!-- Welcome Message -->
+                <div class="message bot-message">
+                    <div class="avatar bot-avatar">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="sender-name">EduQuery Bot</span>
+                            <span class="badge badge-nlp">AI Engine Online</span>
+                            <span class="timestamp" id="initTime">12:00 PM</span>
+                        </div>
+                        <div class="message-text">
+                            Hello! Welcome to the Student Query Portal. 👋<br><br>
+                            I can answer your questions regarding <strong>Courses, Fee Structures, Class Timings, Admission Criteria, Hostel Facilities, and Helpdesk Contacts</strong>.<br><br>
+                            Click any quick question below, or type your query in the input box!
+                        </div>
+                        <div class="contextual-followups">
+                            <button class="followup-btn" onclick="sendQuickQuery('What courses do you offer?')">🎓 Courses Offered</button>
+                            <button class="followup-btn" onclick="sendQuickQuery('What is the fee structure?')">💰 Fee Details</button>
+                            <button class="followup-btn" onclick="sendQuickQuery('What are the class timings?')">⏰ Timings</button>
+                            <button class="followup-btn" onclick="sendQuickQuery('How to contact administration?')">📞 Contact</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator-container" id="typingIndicator" style="display: none;">
+                <div class="avatar bot-avatar mini">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="typing-dots">
+                    <span></span><span></span><span></span>
+                </div>
+                <span class="typing-text">EduQuery Bot is processing question...</span>
+            </div>
+
+            <!-- Input Controls -->
+            <footer class="chat-footer">
+                <div class="quick-tags-container" id="quickReplyContainer">
+                    <span class="tag-label"><i class="fa-solid fa-bolt"></i> Shortcuts:</span>
+                    <button class="quick-tag" onclick="sendQuickQuery('What is the eligibility for B.Tech?')">Eligibility</button>
+                    <button class="quick-tag" onclick="sendQuickQuery('Are scholarships available?')">Scholarships</button>
+                    <button class="quick-tag" onclick="sendQuickQuery('What are the library hours?')">Library Hours</button>
+                    <button class="quick-tag" onclick="sendQuickQuery('Is hostel accommodation provided?')">Hostel Info</button>
+                    <button class="quick-tag" onclick="sendQuickQuery('What is the placement record?')">Placements</button>
+                </div>
+                <form id="chatForm" class="chat-input-wrapper">
+                    <button type="button" id="voiceBtn" class="input-btn voice-btn" title="Voice Input (Speech to Text)">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <input type="text" id="userInput" placeholder="Ask a question (e.g. 'What is the fee structure?' or 'exit')..." autocomplete="off">
+                    <button type="submit" id="sendBtn" class="send-btn">
+                        <span>Send</span> <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Knowledge Base Modal -->
+    <div class="modal-overlay" id="datasetModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-database"></i> Predefined Knowledge Base Inspector</h3>
+                <button class="close-modal" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="datasetSearch" placeholder="Search patterns or answers in knowledge base...">
+                </div>
+                <div class="dataset-list" id="datasetList">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./static/script.js"></script>
+</body>
+</html>
