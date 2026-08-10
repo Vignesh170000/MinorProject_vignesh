@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Query AI Chatbot | Presentation Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --bg-card: rgba(30, 41, 59, 0.85);
+            --primary: #6366f1;
+            --accent-teal: #14b8a6;
+            --accent-pink: #ec4899;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-body); }
+        body { background: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 90%;
+            max-width: 1200px;
+            height: 82vh;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 48px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            backdrop-filter: blur(16px);
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .slide.active { display: flex; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 16px;
+        }
+
+        .slide-header h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slide-number {
+            font-size: 0.9rem;
+            color: var(--accent-teal);
+            font-weight: 600;
+            background: rgba(20, 184, 166, 0.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; width: 100%; }
+
+        .card-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .card-box h3 {
+            font-family: var(--font-heading);
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .card-box ul { list-style: none; }
+        .card-box ul li {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+        }
+        .card-box ul li i { color: var(--accent-teal); margin-top: 4px; }
+
+        .nav-controls {
+            position: absolute;
+            bottom: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover { background: #4f46e5; transform: translateY(-2px); }
+
+        /* Title Slide Layout */
+        .title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .title-slide h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-slide p { font-size: 1.2rem; color: var(--accent-teal); }
+        .img-preview { max-width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 4rem; color: var(--primary);"></i>
+            <h1>STUDENT QUERY AI CHATBOT</h1>
+            <p>Natural Language Processing (NLP) & Rule-Based Intent Matching</p>
+            <span style="font-size: 0.9rem; color: var(--text-muted);">Minor Project Academic Presentation & Viva Defense</span>
+        </div>
+
+        <!-- Slide 2: Problem & Objectives -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fa-solid fa-bullseye"></i> Problem Statement & Objectives</h2>
+                <span class="slide-number">Slide 2 of 5</span>
+            </div>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="card-box">
+                        <h3><i class="fa-solid fa-triangle-exclamation"></i> Current Challenges</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i> Helpdesks flooded with repetitive administrative inquiries.</li>
+                            <li><i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i> Long wait times for students during admission peaks.</li>
+                            <li><i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i> Manual email/phone response is slow & costly.</li>
+                            <li><i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i> Commercial LLM APIs are expensive and hallucinate.</li>
+                        </ul>
+                    </div>
+                    <div class="card-box">
+                        <h3><i class="fa-solid fa-circle-check"></i> Project Solution</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Deterministic offline-capable Python NLP Engine.</li>
+                            <li><i class="fa-solid fa-check"></i> TF-IDF & Cosine Similarity confidence scores.</li>
+                            <li><i class="fa-solid fa-check"></i> Structured JSON Dataset across 8 academic categories.</li>
+                            <li><i class="fa-solid fa-check"></i> Dual Modes: Terminal CLI + Glassmorphism Web App.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Architecture -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fa-solid fa-diagram-project"></i> System Architecture</h2>
+                <span class="slide-number">Slide 3 of 5</span>
+            </div>
+            <div class="slide-body">
+                <div class="grid-3">
+                    <div class="card-box">
+                        <h3>1. Preprocessing</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-gear"></i> Lowercasing & Punctuation Cleanup</li>
+                            <li><i class="fa-solid fa-gear"></i> NLTK Tokenization (`word_tokenize`)</li>
+                            <li><i class="fa-solid fa-gear"></i> Lemmatization (`WordNetLemmatizer`)</li>
+                        </ul>
+                    </div>
+                    <div class="card-box">
+                        <h3>2. NLP Engine</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-brain"></i> TF-IDF Matrix Calculation</li>
+                            <li><i class="fa-solid fa-brain"></i> Stop Words Removal (`english`)</li>
+                            <li><i class="fa-solid fa-brain"></i> Cosine Similarity Scoring ($\cos \theta$)</li>
+                        </ul>
+                    </div>
+                    <div class="card-box">
+                        <h3>3. User Output</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-desktop"></i> Real-time Confidence Badges</li>
+                            <li><i class="fa-solid fa-desktop"></i> Contextual Action Followup Pills</li>
+                            <li><i class="fa-solid fa-desktop"></i> Voice Input & Read Aloud Audio</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Testing & Charts -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fa-solid fa-chart-pie"></i> Testing Results & Evaluation</h2>
+                <span class="slide-number">Slide 4 of 5</span>
+            </div>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="card-box" style="text-align: center;">
+                        <h3>Confusion Matrix Evaluation</h3>
+                        <img src="./charts/confusion_matrix.png" class="img-preview" alt="Confusion Matrix">
+                    </div>
+                    <div class="card-box" style="text-align: center;">
+                        <h3>Model Performance Scores</h3>
+                        <img src="./charts/accuracy_chart.png" class="img-preview" alt="Accuracy Chart">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Conclusion -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fa-solid fa-flag-checkered"></i> Conclusion & Summary</h2>
+                <span class="slide-number">Slide 5 of 5</span>
+            </div>
+            <div class="slide-body">
+                <div class="card-box" style="width: 100%;">
+                    <h3><i class="fa-solid fa-star"></i> Key Project Highlights</h3>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> <strong>High Precision</strong>: Achieved 94.0% accuracy and 96.84% F1-score across all query classes.</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>Ultra Fast</strong>: Response processed in under 5ms per query.</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>Dual Operations</strong>: Tested successfully both in terminal CLI and browser web app.</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>Offline Fallback</strong>: Client-side JS engine matching ensures availability anywhere.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-controls">
+            <button class="nav-btn" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+            <span id="slideCounter" style="color: var(--text-muted); font-size: 0.9rem;">Slide 1 of 5</span>
+            <button class="nav-btn" onclick="changeSlide(1)">Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const slideCounter = document.getElementById('slideCounter');
+
+        function changeSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            slideCounter.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+    </script>
+</body>
+</html>
