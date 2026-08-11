@@ -25,72 +25,83 @@ document.addEventListener('DOMContentLoaded', () => {
     let soundEnabled = true;
     let currentThemeIndex = 0;
     const themes = ['theme-dark', 'theme-cyber', 'theme-light'];
+    let isFlaskServerOnline = false;
 
-    // Embedded Offline Knowledge Base (Fallback if loaded directly via file://)
+    // Default Fallback Dataset (Ensures immediate offline functionality)
     let fullDataset = [
         {
             "tag": "greeting", "category": "General",
-            "patterns": ["hi", "hello", "hey", "good morning", "greetings"],
+            "patterns": ["hi", "hello", "hey", "good morning", "good afternoon", "greetings", "hi chatbot"],
             "responses": ["Hello! Welcome to the Student Query Portal. How can I assist you today with courses, fees, timings, or admissions?"]
         },
         {
             "tag": "goodbye", "category": "General",
-            "patterns": ["bye", "goodbye", "quit", "exit", "stop", "close"],
+            "patterns": ["bye", "goodbye", "quit", "exit", "stop", "close", "see you later"],
             "responses": ["Goodbye! Thank you for visiting the Student Query Portal. Good luck with your studies!"]
         },
         {
+            "tag": "thanks", "category": "General",
+            "patterns": ["thanks", "thank you", "that's helpful", "awesome thanks", "appreciate it"],
+            "responses": ["You're very welcome! Let me know if you need anything else."]
+        },
+        {
             "tag": "courses_offered", "category": "Courses",
-            "patterns": ["what courses do you offer?", "list of available courses", "which degrees are available?", "programs"],
+            "patterns": ["what courses do you offer?", "list of available courses", "which degrees are available?", "tell me about undergraduate programs", "what postgraduate courses are offered?", "can i study btech or bsc here?"],
             "responses": ["We offer Undergraduate (B.Tech Computer Science, B.Sc Data Science, BBA, BCA) and Postgraduate (M.Tech AI, MCA, MBA) programs along with specialized Diploma courses."]
         },
         {
             "tag": "course_duration", "category": "Courses",
-            "patterns": ["how long are the courses?", "duration of btech", "course length"],
+            "patterns": ["how long are the courses?", "what is the duration of btech?", "duration of mca degree", "how many years does mba take?"],
             "responses": ["Undergraduate engineering (B.Tech) programs are 4 years. B.Sc, BCA, and BBA are 3-year programs. Postgraduate degrees (M.Tech, MCA, MBA) take 2 years."]
         },
         {
             "tag": "course_eligibility", "category": "Admissions",
-            "patterns": ["what is the eligibility criteria?", "who can apply for btech?", "admission criteria"],
+            "patterns": ["what is the eligibility criteria?", "who can apply for btech?", "eligibility for mca program", "what marks are required for admission?"],
             "responses": ["For B.Tech/B.Sc: Minimum 60% aggregate in 10+2 with Mathematics/Physics. For MCA/MBA: Bachelor's degree in relevant discipline with at least 55% aggregate marks."]
         },
         {
             "tag": "fee_structure", "category": "Fees",
-            "patterns": ["what is the fee structure?", "how much are the tuition fees?", "fee details", "btech fee"],
+            "patterns": ["what is the fee structure?", "how much are the tuition fees?", "fee per semester for btech", "what is the cost of studying mca?", "tell me about total course fees"],
             "responses": ["Tuition fees are approximately ₹45,000 per semester for B.Tech, ₹35,000 per semester for BCA/B.Sc, and ₹50,000 per semester for MCA/MBA. Installment options are available."]
         },
         {
             "tag": "scholarships", "category": "Fees",
-            "patterns": ["are scholarships available?", "financial aid", "merit scholarship"],
+            "patterns": ["are scholarships available?", "how can i apply for a scholarship?", "merit scholarship criteria", "is financial assistance provided?"],
             "responses": ["Yes! Merit-based scholarships up to 50% tuition waiver are awarded to students scoring over 90% in qualifying entrance exams. Need-based aid is also available."]
         },
         {
             "tag": "class_timings", "category": "Timings",
-            "patterns": ["what are the class timings?", "college hours", "when do lectures start?"],
+            "patterns": ["what are the class timings?", "college hours", "when do lectures start and end?", "morning shift timing"],
             "responses": ["Regular classes run from Monday to Friday, 9:00 AM to 4:30 PM. Lab sessions are scheduled between 1:30 PM and 4:30 PM."]
         },
         {
             "tag": "library_timings", "category": "Timings",
-            "patterns": ["what are the library hours?", "library opening time", "is library open on weekends?"],
+            "patterns": ["what are the library hours?", "is the library open on weekends?", "when does the library close?"],
             "responses": ["The Central Library is open Monday to Saturday from 8:00 AM to 8:00 PM. During examination months, it remains open 24/7."]
         },
         {
             "tag": "exam_schedule", "category": "Exams",
-            "patterns": ["when are the semester exams held?", "exam schedule", "mid term dates"],
+            "patterns": ["when are the semester exams held?", "exam schedule", "mid term examination dates", "where can i find the exam timetable?"],
             "responses": ["Mid-term exams take place in October (Odd semester) and March (Even semester). End-semester final exams are conducted in December and May."]
         },
         {
             "tag": "contact_info", "category": "Contact",
-            "patterns": ["how can i contact administration?", "admission office phone number", "helpdesk email"],
+            "patterns": ["how can i contact administration?", "admission office phone number", "helpdesk email address", "college phone number"],
             "responses": ["You can reach the Student Helpdesk at admissions@university.edu or call +91-1800-555-0199. Office hours: Mon-Fri, 9:00 AM - 5:00 PM."]
         },
         {
+            "tag": "campus_location", "category": "Contact",
+            "patterns": ["where is the campus located?", "what is the college address?", "how to reach the university campus?"],
+            "responses": ["The main campus is located at University Tech Park, Knowledge Corridor, City Center. It is easily accessible via Metro Line 2 (Station: Tech Campus)."]
+        },
+        {
             "tag": "hostel_facility", "category": "Facilities",
-            "patterns": ["is hostel accommodation provided?", "hostel fees", "hostel facility"],
+            "patterns": ["is hostel accommodation provided?", "hostel fees and facilities", "are there separate hostels for boys and girls?"],
             "responses": ["Yes, separate high-security hostels with Wi-Fi, mess facilities, and AC/non-AC rooms are available for boys and girls. Hostel fee ranges from ₹30,000 to ₹50,000 per semester."]
         },
         {
             "tag": "placements", "category": "Placements",
-            "patterns": ["what is the placement record?", "top recruiting companies", "average package"],
+            "patterns": ["what is the placement record?", "top recruiting companies", "average salary package offered", "highest placement package"],
             "responses": ["Our placement cell has a 92% placement record. Top recruiters include Google, Microsoft, TCS, Infosys, and Amazon. The average package is ₹6.5 LPA, with a highest package of ₹42 LPA."]
         }
     ];
@@ -99,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initTime.textContent = getCurrentTime();
     }
 
-    // Try fetching dataset from Flask API; fallback to local dataset if offline
-    fetchDataset();
+    // Try loading dataset JSON & checking API status
+    initKnowledgeBase();
 
     // ----------------------------------------------------
     // Event Listeners
@@ -124,21 +135,18 @@ document.addEventListener('DOMContentLoaded', () => {
         sendMessage("exit");
     });
 
-    // Theme Switcher
     themeToggleBtn.addEventListener('click', () => {
         document.body.classList.remove(themes[currentThemeIndex]);
         currentThemeIndex = (currentThemeIndex + 1) % themes.length;
         document.body.classList.add(themes[currentThemeIndex]);
     });
 
-    // Sound Toggle
     soundToggleBtn.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
         soundToggleBtn.classList.toggle('active', soundEnabled);
         if (soundEnabled) playChime();
     });
 
-    // Export Chat Transcript
     exportChatBtn.addEventListener('click', () => {
         exportChatTranscript();
     });
@@ -175,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         voiceBtn.style.display = 'none';
     }
 
-    // Sidebar Category Filter
+    // Category Pills Filter
     categoryPills.addEventListener('click', (e) => {
         const pill = e.target.closest('.cat-pill');
         if (!pill) return;
@@ -222,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------
-    // Functions
+    // Functions & NLP Matching Engine
     // ----------------------------------------------------
 
     function getCurrentTime() {
@@ -237,8 +245,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-            osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
+            osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
             gain.gain.setValueAtTime(0.08, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
             osc.connect(gain);
@@ -248,55 +256,88 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {}
     }
 
-    function fetchDataset() {
-        fetch('/api/dataset')
+    function initKnowledgeBase() {
+        // 1. Try loading dataset.json for static GitHub Pages view
+        fetch('./dataset.json')
             .then(res => res.json())
             .then(data => {
                 if (data.intents && data.intents.length > 0) {
                     fullDataset = data.intents;
-                    if (serverStatusBadge) {
-                        serverStatusBadge.innerHTML = `<span class="status-dot"></span> Flask API Connected`;
-                    }
                 }
                 renderSuggestedQuestions(fullDataset);
             })
             .catch(err => {
-                // If API fails (e.g. static file view file://), use offline dataset!
-                if (serverStatusBadge) {
-                    serverStatusBadge.innerHTML = `<span class="status-dot" style="background:#f59e0b"></span> Interactive Offline Mode`;
-                }
                 renderSuggestedQuestions(fullDataset);
             });
+
+        // 2. Test Flask server API connection
+        fetch('/api/categories')
+            .then(res => {
+                if (res.ok) {
+                    isFlaskServerOnline = true;
+                    if (serverStatusBadge) {
+                        serverStatusBadge.innerHTML = `<span class="status-dot"></span> Flask API Online`;
+                    }
+                } else {
+                    setOfflineBadge();
+                }
+            })
+            .catch(err => {
+                setOfflineBadge();
+            });
+    }
+
+    function setOfflineBadge() {
+        isFlaskServerOnline = false;
+        if (serverStatusBadge) {
+            serverStatusBadge.innerHTML = `<span class="status-dot" style="background:#10b981"></span> Web NLP Engine Active`;
+        }
     }
 
     function sendMessage(query) {
         appendUserMessage(query);
         showTyping(true);
 
-        // Attempt Flask Backend API call
-        fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: query })
-        })
-        .then(res => res.json())
-        .then(data => {
-            showTyping(false);
-            playChime();
-            const { response, confidence, category, is_exit, suggestions } = data;
-            appendBotMessage(response, category, confidence, is_exit, suggestions);
-        })
-        .catch(err => {
-            // Client-side NLP matching fallback for standalone file view!
-            showTyping(false);
-            playChime();
-            const result = clientSideNlpMatch(query);
-            appendBotMessage(result.response, result.category, result.confidence, result.is_exit, result.suggestions);
-        });
+        if (isFlaskServerOnline) {
+            // Send request to Flask Python server if running
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Flask endpoint unreachable");
+                return res.json();
+            })
+            .then(data => {
+                showTyping(false);
+                playChime();
+                const { response, confidence, category, is_exit, suggestions } = data;
+                appendBotMessage(response, category, confidence, is_exit, suggestions);
+            })
+            .catch(err => {
+                // Seamless fallback to client-side JS NLP engine if Flask is offline
+                processClientSideQuery(query);
+            });
+        } else {
+            // Immediate Client-side JS NLP engine execution (for GitHub Pages!)
+            setTimeout(() => {
+                processClientSideQuery(query);
+            }, 300);
+        }
     }
 
-    function clientSideNlpMatch(query) {
-        const cleaned = query.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+    function processClientSideQuery(query) {
+        showTyping(false);
+        playChime();
+        const result = clientSideNlpMatch(query);
+        appendBotMessage(result.response, result.category, result.confidence, result.is_exit, result.suggestions);
+    }
+
+    function clientSideNlpMatch(userQuery) {
+        const stopWords = new Set(["a", "about", "an", "and", "are", "as", "at", "be", "by", "can", "do", "does", "for", "from", "how", "i", "in", "is", "it", "of", "on", "or", "that", "the", "this", "to", "what", "when", "where", "which", "who", "why", "will", "with", "you", "your"]);
+        
+        const cleaned = userQuery.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
         if (!cleaned) {
             return {
                 response: "Please ask a question so I can assist you!",
@@ -306,51 +347,84 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const exitWords = ["exit", "quit", "bye", "goodbye", "stop", "close"];
-        if (exitWords.includes(cleaned) || exitWords.some(w => cleaned.split(' ').includes(w))) {
+        if (exitWords.includes(cleaned) || exitWords.some(w => cleaned.split(/\s+/).includes(w))) {
             return {
                 response: "Thank you for visiting the Student Query Portal. Good luck with your studies!",
                 confidence: 100.0, category: "General", is_exit: true, suggestions: []
             };
         }
 
-        const userWords = cleaned.split(' ').filter(w => w.length > 2);
+        const rawWords = cleaned.split(/\s+/);
+        const filteredWords = rawWords.filter(w => !stopWords.has(w) && w.length > 1);
+        const queryWords = filteredWords.length > 0 ? filteredWords : rawWords;
+
         let bestIntent = null;
-        let maxMatches = 0;
+        let bestScore = 0.0;
+        let bestCategory = "General";
 
         fullDataset.forEach(intent => {
+            const cat = intent.category || "General";
             (intent.patterns || []).forEach(pattern => {
-                const patWords = pattern.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(' ');
-                let matchCount = 0;
-                userWords.forEach(uw => {
-                    if (patWords.includes(uw)) matchCount++;
-                });
-                if (matchCount > maxMatches) {
-                    maxMatches = matchCount;
+                const patCleaned = pattern.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+                const patWords = patCleaned.split(/\s+/).filter(w => !stopWords.has(w));
+                
+                // 1. Exact string match
+                if (patCleaned === cleaned) {
+                    bestScore = 1.0;
                     bestIntent = intent;
+                    bestCategory = cat;
+                    return;
+                }
+
+                // 2. Keyword Intersection Score
+                let matchCount = 0;
+                queryWords.forEach(qw => {
+                    if (patWords.includes(qw) || patCleaned.includes(qw)) {
+                        matchCount++;
+                    }
+                });
+
+                if (matchCount > 0) {
+                    const overlapScore = matchCount / Math.max(queryWords.length, 1);
+                    if (overlapScore > bestScore) {
+                        bestScore = overlapScore;
+                        bestIntent = intent;
+                        bestCategory = cat;
+                    }
                 }
             });
         });
 
-        if (bestIntent && maxMatches > 0) {
-            const conf = Math.min(Math.round((maxMatches / Math.max(userWords.length, 1)) * 100), 95);
+        if (bestIntent && bestScore >= 0.2) {
+            const conf = Math.min(Math.round(bestScore * 100), 100);
+            const resp = bestIntent.responses[Math.floor(Math.random() * bestIntent.responses.length)];
             return {
-                response: bestIntent.responses[0],
+                response: resp,
                 confidence: conf,
-                category: bestIntent.category || "General",
+                category: bestCategory,
                 is_exit: (bestIntent.tag === "goodbye"),
                 suggestions: getLocalSuggestions()
             };
         } else {
             return {
-                response: "I'm sorry, I couldn't find an exact match for your question. Try asking about course details, fee structures, class timings, eligibility, or contact info.",
-                confidence: 15.0, category: "General", is_exit: false,
+                response: "I'm sorry, I couldn't find an exact match for your question. You can ask about course details, fee structures, class timings, eligibility, or contact info.",
+                confidence: Math.round(bestScore * 100),
+                category: "General",
+                is_exit: false,
                 suggestions: getLocalSuggestions()
             };
         }
     }
 
     function getLocalSuggestions() {
-        return ["What courses do you offer?", "What is the fee structure for B.Tech?", "What are the class timings?"];
+        const pool = [
+            "What courses do you offer?",
+            "What is the fee structure for B.Tech?",
+            "What are the class timings?",
+            "Is hostel accommodation provided?",
+            "What is the eligibility criteria?"
+        ];
+        return pool.sort(() => 0.5 - Math.random()).slice(0, 3);
     }
 
     function appendUserMessage(text) {
@@ -402,6 +476,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`;
         }
 
+        let suggestionsHtml = '';
+        if (suggestions && suggestions.length > 0 && confidence < 50 && !isExit) {
+            suggestionsHtml = `
+                <div style="margin-top: 10px; font-size: 0.8rem; color: #a5b4fc;">
+                    <strong>Did you mean:</strong>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;">
+                        ${suggestions.map(s => `<button class="action-chip" onclick="sendQuickQuery('${escapeHtml(s)}')">${escapeHtml(s)}</button>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         msgDiv.innerHTML = `
             <div class="avatar bot-avatar">
                 <i class="fa-solid fa-robot"></i>
@@ -415,6 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="message-text">
                     ${text}
+                    ${suggestionsHtml}
                 </div>
                 ${contextualFollowups}
                 <div class="message-actions">
@@ -442,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let count = 0;
         intents.forEach(intent => {
             if (count >= 7) return;
-            if (intent.tag !== 'greeting' && intent.tag !== 'goodbye' && intent.patterns.length > 0) {
+            if (intent.tag !== 'greeting' && intent.tag !== 'goodbye' && intent.patterns && intent.patterns.length > 0) {
                 const q = intent.patterns[0];
                 const btn = document.createElement('button');
                 btn.className = 'suggest-item';
