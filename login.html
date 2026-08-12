@@ -54,9 +54,9 @@
                 <input type="hidden" id="loginRole" value="student">
                 
                 <div class="input-group">
-                    <label for="authIdentifier"><i class="fa-solid fa-envelope"></i> Student ID or Email</label>
+                    <label for="authIdentifier"><i class="fa-solid fa-envelope"></i> Student Name, ID, or Email</label>
                     <div class="input-field-wrapper">
-                        <input type="text" id="authIdentifier" placeholder="e.g. STU-2026 or student@university.edu" required>
+                        <input type="text" id="authIdentifier" placeholder="e.g. Alex Smith or alex@university.edu" required>
                     </div>
                 </div>
 
@@ -87,14 +87,14 @@
                 <div class="input-group">
                     <label for="regFullName"><i class="fa-solid fa-user"></i> Full Name</label>
                     <div class="input-field-wrapper">
-                        <input type="text" id="regFullName" placeholder="e.g. Vignesh R" required>
+                        <input type="text" id="regFullName" placeholder="e.g. Alex Smith" required>
                     </div>
                 </div>
 
                 <div class="input-group">
                     <label for="regEmail"><i class="fa-solid fa-envelope"></i> University Email</label>
                     <div class="input-field-wrapper">
-                        <input type="email" id="regEmail" placeholder="e.g. vignesh@university.edu" required>
+                        <input type="email" id="regEmail" placeholder="e.g. alex@university.edu" required>
                     </div>
                 </div>
 
@@ -129,7 +129,7 @@
             </div>
 
             <div class="social-logins">
-                <button type="button" class="btn-social btn-social-google" onclick="socialLogin('Google/Email')">
+                <button type="button" class="btn-social btn-social-google" onclick="socialLogin('Google')">
                     <i class="fa-brands fa-google"></i> Google / Email
                 </button>
                 <button type="button" class="btn-social btn-social-apple" onclick="socialLogin('Apple')">
@@ -157,6 +157,16 @@
 
     <!-- Auth JS Script -->
     <script>
+        function formatName(rawInput) {
+            if (!rawInput) return "Student";
+            let clean = rawInput.trim();
+            if (clean.includes('@')) {
+                clean = clean.split('@')[0];
+            }
+            // Capitalize words cleanly
+            return clean.replace(/\./g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+
         function switchAuthTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
             const loginForm = document.getElementById('loginForm');
@@ -170,13 +180,13 @@
                 loginForm.style.display = 'flex';
                 signupForm.style.display = 'none';
                 loginRole.value = 'student';
-                document.getElementById('authIdentifier').placeholder = "e.g. STU-2026 or student@university.edu";
+                document.getElementById('authIdentifier').placeholder = "e.g. Alex Smith or alex@university.edu";
             } else if (tab === 'admin') {
                 document.getElementById('tabAdminBtn').classList.add('active');
                 loginForm.style.display = 'flex';
                 signupForm.style.display = 'none';
                 loginRole.value = 'admin';
-                document.getElementById('authIdentifier').placeholder = "e.g. ADM-101 or admin@university.edu";
+                document.getElementById('authIdentifier').placeholder = "e.g. Dr. Faculty or admin@university.edu";
             } else if (tab === 'signup') {
                 document.getElementById('tabSignupBtn').classList.add('active');
                 loginForm.style.display = 'none';
@@ -196,26 +206,41 @@
         }
 
         function socialLogin(provider) {
+            const typedVal = document.getElementById('authIdentifier').value.trim();
+            let userName = "";
+
+            if (typedVal) {
+                userName = formatName(typedVal);
+            } else {
+                const promptedName = prompt(`Enter your Name to sign in with ${provider}:`, "");
+                if (promptedName && promptedName.trim()) {
+                    userName = formatName(promptedName);
+                } else {
+                    userName = `Student (${provider})`;
+                }
+            }
+
             const userObj = {
-                name: provider === 'GitHub' ? 'Vignesh (GitHub)' : (provider === 'Apple' ? 'Vignesh (Apple)' : 'Vignesh (Google)'),
-                id: 'AUTH-' + provider.substring(0, 3).toUpperCase(),
+                name: userName,
+                id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
                 role: 'Student',
                 provider: provider,
-                email: `vignesh@${provider.toLowerCase()}.com`
+                email: `${userName.toLowerCase().replace(/\s+/g, '')}@${provider.toLowerCase()}.com`
             };
+
             saveUserSession(userObj);
-            alert(`Successfully authenticated via ${provider}! Redirecting to portal...`);
+            alert(`Welcome ${userName}! Successfully authenticated via ${provider}. Redirecting to portal...`);
             window.location.href = 'index.html';
         }
 
         function quickDemoLogin(role) {
             if (role === 'student') {
                 saveUserSession({
-                    name: 'Vignesh R',
+                    name: 'Demo Student',
                     id: 'STU-2026',
                     role: 'Student',
                     course: 'B.Tech Computer Science',
-                    email: 'vignesh@university.edu'
+                    email: 'student@university.edu'
                 });
             } else {
                 saveUserSession({
@@ -235,14 +260,15 @@
 
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const identifier = document.getElementById('authIdentifier').value.trim();
+            const rawIdentifier = document.getElementById('authIdentifier').value.trim();
             const role = document.getElementById('loginRole').value;
-            
+            const displayName = formatName(rawIdentifier);
+
             const userObj = {
-                name: identifier.split('@')[0] || identifier,
-                id: role === 'student' ? 'STU-2026' : 'ADM-101',
+                name: displayName,
+                id: role === 'student' ? 'STU-' + Math.floor(1000 + Math.random() * 9000) : 'ADM-101',
                 role: role === 'student' ? 'Student' : 'Admin',
-                email: identifier.includes('@') ? identifier : `${identifier}@university.edu`
+                email: rawIdentifier.includes('@') ? rawIdentifier : `${displayName.toLowerCase().replace(/\s+/g, '')}@university.edu`
             };
 
             saveUserSession(userObj);
@@ -256,7 +282,7 @@
             const course = document.getElementById('regCourse').value;
 
             const userObj = {
-                name: fullName,
+                name: formatName(fullName),
                 id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
                 role: 'Student',
                 course: course,
@@ -264,7 +290,7 @@
             };
 
             saveUserSession(userObj);
-            alert("Account registered successfully! Redirecting to Portal...");
+            alert(`Welcome ${userObj.name}! Account created successfully.`);
             window.location.href = 'index.html';
         });
     </script>

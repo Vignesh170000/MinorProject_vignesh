@@ -34,6 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const themes = ['theme-dark', 'theme-cyber', 'theme-light'];
     let isFlaskServerOnline = false;
 
+    // Helper Name Formatter
+    function formatName(rawInput) {
+        if (!rawInput) return "Student";
+        let clean = rawInput.trim();
+        if (clean.includes('@')) {
+            clean = clean.split('@')[0];
+        }
+        return clean.replace(/\./g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    }
+
     // Check User Session State
     updateUserSessionUI();
 
@@ -164,12 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const identifier = document.getElementById('dashAuthIdentifier').value.trim();
             const role = document.getElementById('dashLoginRole').value;
-            
+            const displayName = formatName(identifier);
+
             const userObj = {
-                name: identifier.split('@')[0] || identifier,
-                id: role === 'student' ? 'STU-2026' : 'ADM-101',
+                name: displayName,
+                id: role === 'student' ? 'STU-' + Math.floor(1000 + Math.random() * 9000) : 'ADM-101',
                 role: role === 'student' ? 'Student' : 'Admin',
-                email: identifier.includes('@') ? identifier : `${identifier}@university.edu`
+                email: identifier.includes('@') ? identifier : `${displayName.toLowerCase().replace(/\s+/g, '')}@university.edu`
             };
 
             localStorage.setItem('eduquery_user', JSON.stringify(userObj));
@@ -708,30 +719,60 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modalStudentTabBtn').classList.toggle('active', role === 'student');
         document.getElementById('modalAdminTabBtn').classList.toggle('active', role === 'admin');
         document.getElementById('dashLoginRole').value = role;
-        document.getElementById('dashAuthIdentifier').placeholder = role === 'student' ? "e.g. STU-2026 or student@university.edu" : "e.g. ADM-101 or admin@university.edu";
+        document.getElementById('dashAuthIdentifier').placeholder = role === 'student' ? "e.g. Alex Smith or alex@university.edu" : "e.g. Dr. Faculty or admin@university.edu";
     };
 
     window.quickDashboardLogin = (role) => {
+        const typedVal = document.getElementById('dashAuthIdentifier')?.value.trim();
+        let userName = "";
+
+        if (typedVal) {
+            userName = formatName(typedVal);
+        } else {
+            const promptedName = prompt("Enter your Name for Login:", "");
+            if (promptedName && promptedName.trim()) {
+                userName = formatName(promptedName);
+            } else {
+                userName = role === 'student' ? 'Student' : 'Admin';
+            }
+        }
+
         const userObj = {
-            name: role === 'student' ? 'Vignesh R' : 'Dr. Administrator',
-            id: role === 'student' ? 'STU-2026' : 'ADM-101',
+            name: userName,
+            id: role === 'student' ? 'STU-' + Math.floor(1000 + Math.random() * 9000) : 'ADM-101',
             role: role === 'student' ? 'Student' : 'Admin',
-            email: role === 'student' ? 'vignesh@university.edu' : 'admin@university.edu'
+            email: `${userName.toLowerCase().replace(/\s+/g, '')}@university.edu`
         };
+
         localStorage.setItem('eduquery_user', JSON.stringify(userObj));
         updateUserSessionUI();
-        loginModal.classList.remove('active');
+        if (loginModal) loginModal.classList.remove('active');
         appendBotMessage(`Welcome back, ${userObj.name}! How can I assist you today?`, "General", 100.0, false, []);
     };
 
     window.quickSocialLogin = (provider) => {
+        const typedVal = document.getElementById('dashAuthIdentifier')?.value.trim();
+        let userName = "";
+
+        if (typedVal) {
+            userName = formatName(typedVal);
+        } else {
+            const promptedName = prompt(`Enter your Name to sign in with ${provider}:`, "");
+            if (promptedName && promptedName.trim()) {
+                userName = formatName(promptedName);
+            } else {
+                userName = `Student (${provider})`;
+            }
+        }
+
         const userObj = {
-            name: provider === 'GitHub' ? 'Vignesh (GitHub)' : (provider === 'Apple' ? 'Vignesh (Apple)' : 'Vignesh (Google)'),
-            id: 'AUTH-' + provider.substring(0, 3).toUpperCase(),
+            name: userName,
+            id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
             role: 'Student',
             provider: provider,
-            email: `vignesh@${provider.toLowerCase()}.com`
+            email: `${userName.toLowerCase().replace(/\s+/g, '')}@${provider.toLowerCase()}.com`
         };
+
         localStorage.setItem('eduquery_user', JSON.stringify(userObj));
         updateUserSessionUI();
         if (loginModal) loginModal.classList.remove('active');
