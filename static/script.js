@@ -723,4 +723,18 @@ document.addEventListener('DOMContentLoaded', () => {
         loginModal.classList.remove('active');
         appendBotMessage(`Welcome back, ${userObj.name}! How can I assist you today?`, "General", 100.0, false, []);
     };
+
+    window.quickSocialLogin = (provider) => {
+        const userObj = {
+            name: provider === 'GitHub' ? 'Vignesh (GitHub)' : (provider === 'Apple' ? 'Vignesh (Apple)' : 'Vignesh (Google)'),
+            id: 'AUTH-' + provider.substring(0, 3).toUpperCase(),
+            role: 'Student',
+            provider: provider,
+            email: `vignesh@${provider.toLowerCase()}.com`
+        };
+        localStorage.setItem('eduquery_user', JSON.stringify(userObj));
+        updateUserSessionUI();
+        if (loginModal) loginModal.classList.remove('active');
+        appendBotMessage(`Authenticated via ${provider}! Welcome, ${userObj.name}. How can I assist you today?`, "General", 100.0, false, []);
+    };
 });

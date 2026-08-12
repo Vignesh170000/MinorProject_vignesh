@@ -123,9 +123,26 @@
                 </button>
             </form>
 
+            <!-- Social OAuth Logins (Email / Apple / GitHub) -->
+            <div class="auth-divider">
+                <span>OR CONTINUE WITH</span>
+            </div>
+
+            <div class="social-logins">
+                <button type="button" class="btn-social btn-social-google" onclick="socialLogin('Google/Email')">
+                    <i class="fa-brands fa-google"></i> Google / Email
+                </button>
+                <button type="button" class="btn-social btn-social-apple" onclick="socialLogin('Apple')">
+                    <i class="fa-brands fa-apple"></i> Apple
+                </button>
+                <button type="button" class="btn-social btn-social-github" onclick="socialLogin('GitHub')">
+                    <i class="fa-brands fa-github"></i> GitHub
+                </button>
+            </div>
+
             <!-- Quick Demo Login Shortcuts -->
             <div class="demo-logins">
-                <span class="demo-label"><i class="fa-solid fa-bolt"></i> Quick Demo Login:</span>
+                <span class="demo-label"><i class="fa-solid fa-bolt"></i> 1-Click Quick Demo Login:</span>
                 <div class="demo-buttons">
                     <button type="button" class="demo-btn" onclick="quickDemoLogin('student')">
                         <i class="fa-solid fa-user-graduate"></i> Demo Student
@@ -176,6 +193,19 @@
                 input.type = 'password';
                 btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
             }
+        }
+
+        function socialLogin(provider) {
+            const userObj = {
+                name: provider === 'GitHub' ? 'Vignesh (GitHub)' : (provider === 'Apple' ? 'Vignesh (Apple)' : 'Vignesh (Google)'),
+                id: 'AUTH-' + provider.substring(0, 3).toUpperCase(),
+                role: 'Student',
+                provider: provider,
+                email: `vignesh@${provider.toLowerCase()}.com`
+            };
+            saveUserSession(userObj);
+            alert(`Successfully authenticated via ${provider}! Redirecting to portal...`);
+            window.location.href = 'index.html';
         }
 
         function quickDemoLogin(role) {
