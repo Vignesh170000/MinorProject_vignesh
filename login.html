@@ -13,12 +13,19 @@
     <!-- Relative CSS Path works both in Flask and via direct file opening -->
     <link rel="stylesheet" href="./static/style.css">
 </head>
-<body class="theme-dark auth-page-body">
+<body class="theme-dark auth-page-body" style="flex-direction:column; padding: 20px 0;">
     <!-- Glowing Orbs Background -->
     <div class="background-globes">
         <div class="globe globe-1"></div>
         <div class="globe globe-2"></div>
         <div class="globe globe-3"></div>
+    </div>
+
+    <!-- Top Navigation Bar Linking to Main Platform -->
+    <div style="position: absolute; top: 16px; right: 24px; z-index: 20;">
+        <a href="index.html" class="btn-secondary" style="text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+            <span>Guided AI Platform</span> <i class="fa-solid fa-arrow-right"></i>
+        </a>
     </div>
 
     <div class="auth-container">
@@ -242,8 +249,8 @@
             };
 
             saveUserSession(userObj);
-            showAlert(`✅ Authenticated via ${provider}! Redirecting to Guided Platform...`, true);
-            setTimeout(() => { window.location.href = 'index.html'; }, 700);
+            showAlert(`✅ Authenticated via ${provider}! Launching Guided Platform...`, true);
+            setTimeout(() => { window.location.href = 'index.html'; }, 600);
         }
 
         function directPlatformLaunch(role) {
@@ -255,8 +262,8 @@
                 email: role === 'student' ? 'student@university.edu' : 'admin@university.edu'
             };
             saveUserSession(userObj);
-            showAlert(`🚀 Access Granted! Launching Guided Platform as ${userObj.name}...`, true);
-            setTimeout(() => { window.location.href = 'index.html'; }, 600);
+            showAlert(`🚀 Access Granted! Opening Platform as ${userObj.name}...`, true);
+            setTimeout(() => { window.location.href = 'index.html'; }, 500);
         }
 
         function saveUserSession(userObj) {
@@ -274,7 +281,6 @@
                 return;
             }
 
-            // Verify Password Rules
             if (role === 'admin' && password !== 'admin123' && password !== '1234') {
                 showAlert("❌ Invalid Admin Password! (Default Admin Password: <strong>admin123</strong>)");
                 return;
@@ -291,8 +297,8 @@
             };
 
             saveUserSession(userObj);
-            showAlert(`✅ Credentials Verified! Redirecting to Guided Platform...`, true);
-            setTimeout(() => { window.location.href = 'index.html'; }, 600);
+            showAlert(`✅ Credentials Verified! Connecting both portals...`, true);
+            setTimeout(() => { window.location.href = 'index.html'; }, 500);
         });
 
         document.getElementById('signupForm').addEventListener('submit', (e) => {
@@ -318,7 +324,7 @@
 
             saveUserSession(userObj);
             showAlert(`🎉 Account Created & Verified! Opening Guided Platform...`, true);
-            setTimeout(() => { window.location.href = 'index.html'; }, 800);
+            setTimeout(() => { window.location.href = 'index.html'; }, 600);
         });
     </script>
 </body>
