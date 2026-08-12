@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const exportChatBtn = document.getElementById('exportChatBtn');
     const clearChatBtn = document.getElementById('clearChatBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
     const exitChatBtn = document.getElementById('exitChatBtn');
     const voiceBtn = document.getElementById('voiceBtn');
     const viewDatasetBtn = document.getElementById('viewDatasetBtn');
@@ -20,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarSearchInput = document.getElementById('sidebarSearchInput');
     const initTime = document.getElementById('initTime');
     const serverStatusBadge = document.getElementById('serverStatusBadge');
+    const userProfileBadge = document.getElementById('userProfileBadge');
+    const userNameDisplay = document.getElementById('userNameDisplay');
 
     // State Variables
     let soundEnabled = true;
@@ -27,7 +30,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const themes = ['theme-dark', 'theme-cyber', 'theme-light'];
     let isFlaskServerOnline = false;
 
-    // Default Fallback Dataset (Ensures immediate offline functionality)
+    // User Session Check
+    const savedUserJson = localStorage.getItem('eduquery_user');
+    if (savedUserJson) {
+        try {
+            const userObj = JSON.parse(savedUserJson);
+            if (userProfileBadge && userNameDisplay) {
+                userNameDisplay.textContent = `${userObj.name} (${userObj.role || 'Student'})`;
+                userProfileBadge.style.display = 'flex';
+            }
+        } catch(e) {}
+    }
+
+    // Default Knowledge Base Dataset
     let fullDataset = [
         {
             "tag": "greeting", "category": "General",
@@ -110,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
         initTime.textContent = getCurrentTime();
     }
 
-    // Try loading dataset JSON & checking API status
     initKnowledgeBase();
 
     // ----------------------------------------------------
@@ -130,6 +144,15 @@ document.addEventListener('DOMContentLoaded', () => {
         chatWindow.innerHTML = '';
         appendBotMessage("Chat history cleared. How can I assist you today?", "General", 100.0, false, []);
     });
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            if (confirm("Are you sure you want to log out?")) {
+                localStorage.removeItem('eduquery_user');
+                window.location.href = 'login.html';
+            }
+        });
+    }
 
     exitChatBtn.addEventListener('click', () => {
         sendMessage("exit");
@@ -257,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initKnowledgeBase() {
-        // 1. Try loading dataset.json for static GitHub Pages view
         fetch('./dataset.json')
             .then(res => res.json())
             .then(data => {
@@ -270,7 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderSuggestedQuestions(fullDataset);
             });
 
-        // 2. Test Flask server API connection
         fetch('/api/categories')
             .then(res => {
                 if (res.ok) {
@@ -299,7 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showTyping(true);
 
         if (isFlaskServerOnline) {
-            // Send request to Flask Python server if running
             fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -316,11 +336,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 appendBotMessage(response, category, confidence, is_exit, suggestions);
             })
             .catch(err => {
-                // Seamless fallback to client-side JS NLP engine if Flask is offline
                 processClientSideQuery(query);
             });
         } else {
-            // Immediate Client-side JS NLP engine execution (for GitHub Pages!)
             setTimeout(() => {
                 processClientSideQuery(query);
             }, 300);
@@ -368,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const patCleaned = pattern.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
                 const patWords = patCleaned.split(/\s+/).filter(w => !stopWords.has(w));
                 
-                // 1. Exact string match
                 if (patCleaned === cleaned) {
                     bestScore = 1.0;
                     bestIntent = intent;
@@ -376,7 +393,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // 2. Keyword Intersection Score
                 let matchCount = 0;
                 queryWords.forEach(qw => {
                     if (patWords.includes(qw) || patCleaned.includes(qw)) {

@@ -79,6 +79,12 @@
                     <p>Interactive Student Query Portal & NLP Engine</p>
                 </div>
                 <div class="chat-actions">
+                    <!-- Logged in User Badge -->
+                    <div class="user-profile-badge" id="userProfileBadge" style="display: none;">
+                        <i class="fa-solid fa-user-check"></i>
+                        <span id="userNameDisplay">Student</span>
+                    </div>
+
                     <button id="themeToggleBtn" class="icon-btn" title="Toggle Theme (Dark / Cyber / Light)">
                         <i class="fa-solid fa-palette"></i>
                     </button>
@@ -90,6 +96,9 @@
                     </button>
                     <button id="clearChatBtn" class="icon-btn" title="Clear Chat History">
                         <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <button id="logoutBtn" class="icon-btn" title="Logout Session">
+                        <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                     <button id="exitChatBtn" class="btn-danger" title="Exit Session">
                         <i class="fa-solid fa-power-off"></i> Exit Session

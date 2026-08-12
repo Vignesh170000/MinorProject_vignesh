@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, request, jsonify, send_from_directory, send_file
+from flask import Flask, render_template, request, jsonify, send_file
 from nlp_engine import StudentChatbotNLP
 
 if hasattr(sys.stdout, 'reconfigure'):
@@ -11,10 +11,15 @@ chatbot = StudentChatbotNLP(dataset_path="dataset.json")
 
 @app.route("/")
 def index():
-    # Serve index.html from root if exists, or from templates
     if os.path.exists("index.html"):
         return send_file("index.html")
     return render_template("index.html")
+
+@app.route("/login")
+def login_page():
+    if os.path.exists("login.html"):
+        return send_file("login.html")
+    return "Login page not found", 404
 
 @app.route("/presentation")
 def presentation():
@@ -28,21 +33,24 @@ def dataset_json():
         return send_file("dataset.json")
     return jsonify({"error": "dataset.json not found"}), 404
 
-@app.route("/report")
-def project_report():
-    if os.path.exists("PROJECT_REPORT.md"):
-        with open("PROJECT_REPORT.md", "r", encoding="utf-8") as f:
-            content = f.read()
-        return f"<html><body style='font-family:sans-serif; padding:40px; background:#0b0f19; color:#f8fafc;'><pre style='white-space:pre-wrap;'>{content}</pre></body></html>"
-    return "Report not found", 404
+@app.route("/api/login", methods=["POST"])
+def api_login():
+    data = request.get_json(force=True) or {}
+    identifier = data.get("identifier", "").strip()
+    role = data.get("role", "student")
+    
+    if not identifier:
+        return jsonify({"success": False, "message": "Identifier required"}), 400
 
-@app.route("/viva")
-def viva_guide():
-    if os.path.exists("VIVA_AND_PRESENTATION_GUIDE.md"):
-        with open("VIVA_AND_PRESENTATION_GUIDE.md", "r", encoding="utf-8") as f:
-            content = f.read()
-        return f"<html><body style='font-family:sans-serif; padding:40px; background:#0b0f19; color:#f8fafc;'><pre style='white-space:pre-wrap;'>{content}</pre></body></html>"
-    return "Viva guide not found", 404
+    return jsonify({
+        "success": True,
+        "user": {
+            "name": identifier.split("@")[0],
+            "id": "STU-2026" if role == "student" else "ADM-101",
+            "role": "Student" if role == "student" else "Admin",
+            "email": identifier if "@" in identifier else f"{identifier}@university.edu"
+        }
+    })
 
 @app.route("/api/chat", methods=["POST"])
 def chat_api():
