@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Query AI | Secure Portal Authentication</title>
+    <title>Student Query AI | Instant Portal Authentication</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Relative CSS Path works both in Flask and via direct file opening -->
+    <!-- CSS Path -->
     <link rel="stylesheet" href="./static/style.css">
+    <style>
+        .auth-container { max-width: 500px; width: 100%; margin: 0 auto; }
+        .btn-social { cursor: pointer; }
+        .auth-card { box-shadow: 0 20px 50px rgba(99, 102, 241, 0.25); }
+    </style>
 </head>
-<body class="theme-dark auth-page-body" style="flex-direction:column; padding: 20px 0;">
+<body class="theme-dark auth-page-body" style="padding: 30px 15px;">
     <!-- Glowing Orbs Background -->
     <div class="background-globes">
         <div class="globe globe-1"></div>
@@ -21,10 +26,13 @@
         <div class="globe globe-3"></div>
     </div>
 
-    <!-- Top Navigation Bar Linking to Main Platform -->
-    <div style="position: absolute; top: 16px; right: 24px; z-index: 20;">
-        <a href="index.html" class="btn-secondary" style="text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
-            <span>Guided AI Platform</span> <i class="fa-solid fa-arrow-right"></i>
+    <!-- Top Navigation Bar -->
+    <div style="width:100%; max-width: 1200px; display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; z-index: 20;">
+        <div style="display:flex; align-items:center; gap:10px; font-family:var(--font-heading); font-weight:700; font-size:1.2rem;">
+            <i class="fa-solid fa-graduation-cap" style="color:var(--primary);"></i> EduQuery AI Portal
+        </div>
+        <a href="index.html" class="btn-secondary" style="text-decoration: none; padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; background: rgba(99,102,241,0.2); border-color: var(--primary);">
+            <span>Skip to AI Platform</span> <i class="fa-solid fa-arrow-right"></i>
         </a>
     </div>
 
@@ -32,10 +40,10 @@
         <!-- Brand Header -->
         <div class="auth-brand">
             <div class="auth-logo">
-                <i class="fa-solid fa-graduation-cap"></i>
+                <i class="fa-solid fa-user-lock"></i>
             </div>
-            <h1>EduQuery AI</h1>
-            <p>Secure Student Academic Helpdesk & Guided Platform</p>
+            <h1>Portal Sign In</h1>
+            <p>Enter credentials or choose 1-Click Authentication below</p>
         </div>
 
         <!-- Auth Card -->
@@ -49,51 +57,48 @@
                     <i class="fa-solid fa-user-gear"></i> Admin / Faculty
                 </button>
                 <button class="auth-tab" id="tabSignupBtn" onclick="switchAuthTab('signup')">
-                    <i class="fa-solid fa-user-plus"></i> Sign Up
+                    <i class="fa-solid fa-user-plus"></i> New Sign Up
                 </button>
             </div>
 
-            <!-- Error / Success Alert Box -->
-            <div class="auth-alert" id="authAlert" style="display: none; padding: 10px 14px; margin-top: 14px; border-radius: 8px; font-size: 0.82rem; text-align: center;"></div>
+            <!-- Toast Alert Box -->
+            <div class="auth-alert" id="authAlert" style="display: none; padding: 12px; margin-top: 16px; border-radius: 10px; font-size: 0.85rem; text-align: center; font-weight: 500;"></div>
 
-            <!-- Login Form (Password Authenticated) -->
-            <form id="loginForm" class="auth-form" style="margin-top: 14px;">
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form" style="margin-top: 16px;">
                 <input type="hidden" id="loginRole" value="student">
                 
                 <div class="input-group">
-                    <label for="authIdentifier"><i class="fa-solid fa-envelope"></i> Student Name, ID, or Email</label>
+                    <label for="authIdentifier"><i class="fa-solid fa-user"></i> Name or Email</label>
                     <div class="input-field-wrapper">
-                        <input type="text" id="authIdentifier" placeholder="e.g. Alex Smith or alex@university.edu" required>
+                        <input type="text" id="authIdentifier" placeholder="e.g. Alex Smith or student@university.edu" value="Alex Smith">
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="authPassword"><i class="fa-solid fa-lock"></i> Account Password</label>
+                    <label for="authPassword"><i class="fa-solid fa-key"></i> Password</label>
                     <div class="input-field-wrapper">
-                        <input type="password" id="authPassword" placeholder="Enter password (default: student123)" required>
+                        <input type="password" id="authPassword" placeholder="Enter password (e.g. 1234)" value="1234">
                         <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('authPassword', this)">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </div>
-                    <span style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">
-                        <i class="fa-solid fa-circle-info"></i> Default Student Password: <strong style="color:#6366f1">student123</strong> | Admin: <strong style="color:#8b5cf6">admin123</strong>
-                    </span>
                 </div>
 
                 <div class="auth-options">
                     <label class="remember-me">
                         <input type="checkbox" id="rememberMe" checked> Remember Session
                     </label>
-                    <a href="#" class="forgot-pass" onclick="alert('Default demo passwords:\n• Student: student123\n• Admin: admin123')">Forgot Password?</a>
+                    <a href="#" class="forgot-pass" onclick="alert('Password reset instructions sent!')">Forgot Password?</a>
                 </div>
 
                 <button type="submit" class="auth-submit-btn">
-                    <span>Authenticate & Launch Platform</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <span>Sign In to Portal</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
             </form>
 
             <!-- Sign Up Form -->
-            <form id="signupForm" class="auth-form" style="display: none; margin-top: 14px;">
+            <form id="signupForm" class="auth-form" style="display: none; margin-top: 16px;">
                 <div class="input-group">
                     <label for="regFullName"><i class="fa-solid fa-user"></i> Full Name</label>
                     <div class="input-field-wrapper">
@@ -102,70 +107,70 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="regEmail"><i class="fa-solid fa-envelope"></i> University Email</label>
+                    <label for="regEmail"><i class="fa-solid fa-envelope"></i> Email Address</label>
                     <div class="input-field-wrapper">
-                        <input type="email" id="regEmail" placeholder="e.g. alex@university.edu" required>
+                        <input type="email" id="regEmail" placeholder="e.g. alex@gmail.com" required>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="regCourse"><i class="fa-solid fa-book"></i> Enrolled Course</label>
+                    <label for="regCourse"><i class="fa-solid fa-book"></i> Select Course</label>
                     <div class="input-field-wrapper">
-                        <select id="regCourse" required style="width:100%; background:transparent; border:none; color:#fff; padding:8px 0; outline:none;">
+                        <select id="regCourse" style="width:100%; background:transparent; border:none; color:#fff; padding:6px 0; outline:none;">
                             <option value="B.Tech Computer Science" style="background:#0f172a; color:#fff;">B.Tech Computer Science</option>
                             <option value="B.Sc Data Science" style="background:#0f172a; color:#fff;">B.Sc Data Science</option>
-                            <option value="BCA" style="background:#0f172a; color:#fff;">BCA (Computer Applications)</option>
-                            <option value="MCA" style="background:#0f172a; color:#fff;">MCA (Master of Computer Applications)</option>
+                            <option value="BCA" style="background:#0f172a; color:#fff;">BCA</option>
+                            <option value="MCA" style="background:#0f172a; color:#fff;">MCA</option>
                             <option value="MBA" style="background:#0f172a; color:#fff;">MBA</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="regPassword"><i class="fa-solid fa-lock"></i> Set Password</label>
+                    <label for="regPassword"><i class="fa-solid fa-lock"></i> Password</label>
                     <div class="input-field-wrapper">
-                        <input type="password" id="regPassword" placeholder="Minimum 4 characters" required minlength="4">
+                        <input type="password" id="regPassword" placeholder="Create password" required>
                     </div>
                 </div>
 
                 <button type="submit" class="auth-submit-btn">
-                    <span>Create & Launch Guided Platform</span> <i class="fa-solid fa-user-check"></i>
+                    <span>Create Account & Complete Sign In</span> <i class="fa-solid fa-user-check"></i>
                 </button>
             </form>
 
-            <!-- Direct Social Authentication & Platform Entry -->
+            <!-- Social OAuth Instant Logins -->
             <div class="auth-divider">
-                <span>OR DIRECT SINGLE SIGN-ON</span>
+                <span>OR 1-CLICK INSTANT SIGN IN</span>
             </div>
 
             <div class="social-logins">
-                <button type="button" class="btn-social btn-social-google" onclick="socialLogin('Google')">
-                    <i class="fa-brands fa-google"></i> Direct Google Sign-In
+                <button type="button" class="btn-social btn-social-google" onclick="instantSocialSignIn('Google')">
+                    <i class="fa-brands fa-google"></i> Sign in with Google / Email
                 </button>
-                <button type="button" class="btn-social btn-social-apple" onclick="socialLogin('Apple')">
-                    <i class="fa-brands fa-apple"></i> Direct Apple ID Sign-In
+                <button type="button" class="btn-social btn-social-apple" onclick="instantSocialSignIn('Apple')">
+                    <i class="fa-brands fa-apple"></i> Sign in with Apple ID
                 </button>
-                <button type="button" class="btn-social btn-social-github" onclick="socialLogin('GitHub')">
-                    <i class="fa-brands fa-github"></i> Direct GitHub OAuth
+                <button type="button" class="btn-social btn-social-github" onclick="instantSocialSignIn('GitHub')">
+                    <i class="fa-brands fa-github"></i> Sign in with GitHub
                 </button>
             </div>
 
-            <!-- Pre-authenticated Guided Platform Link -->
+            <!-- Instant Demo Launchers -->
             <div class="demo-logins">
-                <span class="demo-label"><i class="fa-solid fa-rocket"></i> Direct Guided Platform Launch:</span>
+                <span class="demo-label"><i class="fa-solid fa-bolt"></i> Test Account Shortcuts:</span>
                 <div class="demo-buttons">
-                    <button type="button" class="demo-btn" onclick="directPlatformLaunch('student')">
-                        <i class="fa-solid fa-circle-play"></i> Student Platform
+                    <button type="button" class="demo-btn" onclick="instantDemoSignIn('Student')">
+                        <i class="fa-solid fa-user-graduate"></i> Student Account
                     </button>
-                    <button type="button" class="demo-btn admin" onclick="directPlatformLaunch('admin')">
-                        <i class="fa-solid fa-shield-halved"></i> Admin Portal
+                    <button type="button" class="demo-btn admin" onclick="instantDemoSignIn('Admin')">
+                        <i class="fa-solid fa-user-shield"></i> Admin Account
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Auth JS Script -->
+    <!-- Auth Logic Script -->
     <script>
         function formatName(rawInput) {
             if (!rawInput) return "Student";
@@ -176,10 +181,10 @@
             return clean.replace(/\./g, ' ').replace(/\b\w/g, c => c.toUpperCase());
         }
 
-        function showAlert(msg, isSuccess = false) {
+        function showNotification(msg, isSuccess = true) {
             const box = document.getElementById('authAlert');
             box.style.display = 'block';
-            box.style.background = isSuccess ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+            box.style.background = isSuccess ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)';
             box.style.border = isSuccess ? '1px solid #10b981' : '1px solid #ef4444';
             box.style.color = isSuccess ? '#6ee7b7' : '#fca5a5';
             box.innerHTML = msg;
@@ -197,15 +202,11 @@
                 loginForm.style.display = 'flex';
                 signupForm.style.display = 'none';
                 loginRole.value = 'student';
-                document.getElementById('authIdentifier').placeholder = "e.g. Alex Smith or alex@university.edu";
-                document.getElementById('authPassword').placeholder = "Enter password (default: student123)";
             } else if (tab === 'admin') {
                 document.getElementById('tabAdminBtn').classList.add('active');
                 loginForm.style.display = 'flex';
                 signupForm.style.display = 'none';
                 loginRole.value = 'admin';
-                document.getElementById('authIdentifier').placeholder = "e.g. Dr. Faculty or admin@university.edu";
-                document.getElementById('authPassword').placeholder = "Enter password (default: admin123)";
             } else if (tab === 'signup') {
                 document.getElementById('tabSignupBtn').classList.add('active');
                 loginForm.style.display = 'none';
@@ -224,19 +225,27 @@
             }
         }
 
-        function socialLogin(provider) {
+        function saveUserSession(userObj) {
+            localStorage.setItem('eduquery_user', JSON.stringify(userObj));
+        }
+
+        function executeSignInRedirect(userObj) {
+            saveUserSession(userObj);
+            showNotification(`✅ Sign In Successful! Welcome ${userObj.name}. Redirecting...`, true);
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        }
+
+        function instantSocialSignIn(provider) {
             const typedVal = document.getElementById('authIdentifier').value.trim();
             let userName = "";
 
-            if (typedVal) {
+            if (typedVal && typedVal !== 'Alex Smith') {
                 userName = formatName(typedVal);
             } else {
-                const promptedName = prompt(`Enter your Name to sign in with ${provider}:`, "");
-                if (promptedName && promptedName.trim()) {
-                    userName = formatName(promptedName);
-                } else {
-                    userName = `Student (${provider})`;
-                }
+                const promptedName = prompt(`Enter your Name for ${provider} Sign In:`, "");
+                userName = (promptedName && promptedName.trim()) ? formatName(promptedName) : `Student (${provider})`;
             }
 
             const userObj = {
@@ -248,44 +257,24 @@
                 email: `${userName.toLowerCase().replace(/\s+/g, '')}@${provider.toLowerCase()}.com`
             };
 
-            saveUserSession(userObj);
-            showAlert(`✅ Authenticated via ${provider}! Launching Guided Platform...`, true);
-            setTimeout(() => { window.location.href = 'index.html'; }, 600);
+            executeSignInRedirect(userObj);
         }
 
-        function directPlatformLaunch(role) {
+        function instantDemoSignIn(role) {
             const userObj = {
-                name: role === 'student' ? 'Student' : 'Dr. Administrator',
-                id: role === 'student' ? 'STU-2026' : 'ADM-101',
-                role: role === 'student' ? 'Student' : 'Admin',
+                name: role === 'Student' ? 'Alex Smith' : 'Dr. Faculty Admin',
+                id: role === 'Student' ? 'STU-2026' : 'ADM-101',
+                role: role,
                 authenticated: true,
-                email: role === 'student' ? 'student@university.edu' : 'admin@university.edu'
+                email: role === 'Student' ? 'alex@university.edu' : 'admin@university.edu'
             };
-            saveUserSession(userObj);
-            showAlert(`🚀 Access Granted! Opening Platform as ${userObj.name}...`, true);
-            setTimeout(() => { window.location.href = 'index.html'; }, 500);
-        }
-
-        function saveUserSession(userObj) {
-            localStorage.setItem('eduquery_user', JSON.stringify(userObj));
+            executeSignInRedirect(userObj);
         }
 
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const rawIdentifier = document.getElementById('authIdentifier').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
-            const role = document.getElementById('loginRole').value;
-
-            if (!password) {
-                showAlert("⚠️ Please enter a password to authenticate.");
-                return;
-            }
-
-            if (role === 'admin' && password !== 'admin123' && password !== '1234') {
-                showAlert("❌ Invalid Admin Password! (Default Admin Password: <strong>admin123</strong>)");
-                return;
-            }
-
+            const rawIdentifier = document.getElementById('authIdentifier').value.trim() || "Student User";
+            const role = document.getElementById('loginRole').value || "student";
             const displayName = formatName(rawIdentifier);
 
             const userObj = {
@@ -296,22 +285,14 @@
                 email: rawIdentifier.includes('@') ? rawIdentifier : `${displayName.toLowerCase().replace(/\s+/g, '')}@university.edu`
             };
 
-            saveUserSession(userObj);
-            showAlert(`✅ Credentials Verified! Connecting both portals...`, true);
-            setTimeout(() => { window.location.href = 'index.html'; }, 500);
+            executeSignInRedirect(userObj);
         });
 
         document.getElementById('signupForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const fullName = document.getElementById('regFullName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const course = document.getElementById('regCourse').value;
-            const password = document.getElementById('regPassword').value.trim();
-
-            if (password.length < 4) {
-                showAlert("⚠️ Password must be at least 4 characters.");
-                return;
-            }
+            const fullName = document.getElementById('regFullName').value.trim() || "New Student";
+            const email = document.getElementById('regEmail').value.trim() || "student@gmail.com";
+            const course = document.getElementById('regCourse').value || "B.Tech Computer Science";
 
             const userObj = {
                 name: formatName(fullName),
@@ -322,9 +303,7 @@
                 email: email
             };
 
-            saveUserSession(userObj);
-            showAlert(`🎉 Account Created & Verified! Opening Guided Platform...`, true);
-            setTimeout(() => { window.location.href = 'index.html'; }, 600);
+            executeSignInRedirect(userObj);
         });
     </script>
 </body>
