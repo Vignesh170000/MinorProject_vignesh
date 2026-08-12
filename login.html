@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Query AI | Instant Portal Authentication</title>
+    <title>Student Query AI | Secure Portal Authentication</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,7 +32,7 @@
             <i class="fa-solid fa-graduation-cap" style="color:var(--primary);"></i> EduQuery AI Portal
         </div>
         <a href="index.html" class="btn-secondary" style="text-decoration: none; padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; background: rgba(99,102,241,0.2); border-color: var(--primary);">
-            <span>Skip to AI Platform</span> <i class="fa-solid fa-arrow-right"></i>
+            <span>Platform Home</span> <i class="fa-solid fa-arrow-right"></i>
         </a>
     </div>
 
@@ -43,7 +43,7 @@
                 <i class="fa-solid fa-user-lock"></i>
             </div>
             <h1>Portal Sign In</h1>
-            <p>Enter credentials or choose 1-Click Authentication below</p>
+            <p>Please enter your account ID and password to proceed</p>
         </div>
 
         <!-- Auth Card -->
@@ -61,62 +61,65 @@
                 </button>
             </div>
 
-            <!-- Toast Alert Box -->
+            <!-- Validation Toast Alert Box -->
             <div class="auth-alert" id="authAlert" style="display: none; padding: 12px; margin-top: 16px; border-radius: 10px; font-size: 0.85rem; text-align: center; font-weight: 500;"></div>
 
-            <!-- Login Form -->
+            <!-- Login Form (Strict Validation Required) -->
             <form id="loginForm" class="auth-form" style="margin-top: 16px;">
                 <input type="hidden" id="loginRole" value="student">
                 
                 <div class="input-group">
-                    <label for="authIdentifier"><i class="fa-solid fa-user"></i> Name or Email</label>
+                    <label for="authIdentifier"><i class="fa-solid fa-user"></i> Student Name, ID, or Email *</label>
                     <div class="input-field-wrapper">
-                        <input type="text" id="authIdentifier" placeholder="e.g. Alex Smith or student@university.edu" value="Alex Smith">
+                        <input type="text" id="authIdentifier" placeholder="Enter your ID or Email" required autocomplete="off">
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="authPassword"><i class="fa-solid fa-key"></i> Password</label>
+                    <label for="authPassword"><i class="fa-solid fa-key"></i> Password *</label>
                     <div class="input-field-wrapper">
-                        <input type="password" id="authPassword" placeholder="Enter password (e.g. 1234)" value="1234">
+                        <input type="password" id="authPassword" placeholder="Enter your password" required autocomplete="off">
                         <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('authPassword', this)">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </div>
+                    <span style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">
+                        <i class="fa-solid fa-lock"></i> Mandatory field. Try default student password: <strong style="color:#6366f1">student123</strong> or <strong style="color:#6366f1">1234</strong>
+                    </span>
                 </div>
 
                 <div class="auth-options">
                     <label class="remember-me">
                         <input type="checkbox" id="rememberMe" checked> Remember Session
                     </label>
-                    <a href="#" class="forgot-pass" onclick="alert('Password reset instructions sent!')">Forgot Password?</a>
+                    <a href="#" class="forgot-pass" onclick="alert('Demo Passwords:\nStudent: student123 or 1234\nAdmin: admin123')">Forgot Password?</a>
                 </div>
 
                 <button type="submit" class="auth-submit-btn">
-                    <span>Sign In to Portal</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <span>Verify Credentials & Sign In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
             </form>
 
-            <!-- Sign Up Form -->
+            <!-- Sign Up Form (Strict Validation Required) -->
             <form id="signupForm" class="auth-form" style="display: none; margin-top: 16px;">
                 <div class="input-group">
-                    <label for="regFullName"><i class="fa-solid fa-user"></i> Full Name</label>
+                    <label for="regFullName"><i class="fa-solid fa-user"></i> Full Name *</label>
                     <div class="input-field-wrapper">
-                        <input type="text" id="regFullName" placeholder="e.g. Alex Smith" required>
+                        <input type="text" id="regFullName" placeholder="Enter your full name" required>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="regEmail"><i class="fa-solid fa-envelope"></i> Email Address</label>
+                    <label for="regEmail"><i class="fa-solid fa-envelope"></i> Email Address *</label>
                     <div class="input-field-wrapper">
-                        <input type="email" id="regEmail" placeholder="e.g. alex@gmail.com" required>
+                        <input type="email" id="regEmail" placeholder="Enter your email address" required>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="regCourse"><i class="fa-solid fa-book"></i> Select Course</label>
+                    <label for="regCourse"><i class="fa-solid fa-book"></i> Select Course *</label>
                     <div class="input-field-wrapper">
-                        <select id="regCourse" style="width:100%; background:transparent; border:none; color:#fff; padding:6px 0; outline:none;">
+                        <select id="regCourse" required style="width:100%; background:transparent; border:none; color:#fff; padding:6px 0; outline:none;">
                             <option value="B.Tech Computer Science" style="background:#0f172a; color:#fff;">B.Tech Computer Science</option>
                             <option value="B.Sc Data Science" style="background:#0f172a; color:#fff;">B.Sc Data Science</option>
                             <option value="BCA" style="background:#0f172a; color:#fff;">BCA</option>
@@ -127,50 +130,37 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="regPassword"><i class="fa-solid fa-lock"></i> Password</label>
+                    <label for="regPassword"><i class="fa-solid fa-lock"></i> Create Password *</label>
                     <div class="input-field-wrapper">
-                        <input type="password" id="regPassword" placeholder="Create password" required>
+                        <input type="password" id="regPassword" placeholder="Create a password (min 4 chars)" required minlength="4">
                     </div>
                 </div>
 
                 <button type="submit" class="auth-submit-btn">
-                    <span>Create Account & Complete Sign In</span> <i class="fa-solid fa-user-check"></i>
+                    <span>Register & Sign In</span> <i class="fa-solid fa-user-check"></i>
                 </button>
             </form>
 
-            <!-- Social OAuth Instant Logins -->
+            <!-- Social OAuth Sign In -->
             <div class="auth-divider">
-                <span>OR 1-CLICK INSTANT SIGN IN</span>
+                <span>OR SIGN IN WITH SOCIAL ACCOUNT</span>
             </div>
 
             <div class="social-logins">
-                <button type="button" class="btn-social btn-social-google" onclick="instantSocialSignIn('Google')">
+                <button type="button" class="btn-social btn-social-google" onclick="strictSocialSignIn('Google')">
                     <i class="fa-brands fa-google"></i> Sign in with Google / Email
                 </button>
-                <button type="button" class="btn-social btn-social-apple" onclick="instantSocialSignIn('Apple')">
+                <button type="button" class="btn-social btn-social-apple" onclick="strictSocialSignIn('Apple')">
                     <i class="fa-brands fa-apple"></i> Sign in with Apple ID
                 </button>
-                <button type="button" class="btn-social btn-social-github" onclick="instantSocialSignIn('GitHub')">
+                <button type="button" class="btn-social btn-social-github" onclick="strictSocialSignIn('GitHub')">
                     <i class="fa-brands fa-github"></i> Sign in with GitHub
                 </button>
-            </div>
-
-            <!-- Instant Demo Launchers -->
-            <div class="demo-logins">
-                <span class="demo-label"><i class="fa-solid fa-bolt"></i> Test Account Shortcuts:</span>
-                <div class="demo-buttons">
-                    <button type="button" class="demo-btn" onclick="instantDemoSignIn('Student')">
-                        <i class="fa-solid fa-user-graduate"></i> Student Account
-                    </button>
-                    <button type="button" class="demo-btn admin" onclick="instantDemoSignIn('Admin')">
-                        <i class="fa-solid fa-user-shield"></i> Admin Account
-                    </button>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Auth Logic Script -->
+    <!-- Auth Logic Script with Strict Validation -->
     <script>
         function formatName(rawInput) {
             if (!rawInput) return "Student";
@@ -231,21 +221,25 @@
 
         function executeSignInRedirect(userObj) {
             saveUserSession(userObj);
-            showNotification(`✅ Sign In Successful! Welcome ${userObj.name}. Redirecting...`, true);
+            showNotification(`✅ Verified! Welcome ${userObj.name}. Launching platform...`, true);
             setTimeout(() => {
                 window.location.href = 'index.html';
-            }, 500);
+            }, 600);
         }
 
-        function instantSocialSignIn(provider) {
+        function strictSocialSignIn(provider) {
             const typedVal = document.getElementById('authIdentifier').value.trim();
             let userName = "";
 
-            if (typedVal && typedVal !== 'Alex Smith') {
+            if (typedVal && typedVal.length >= 2) {
                 userName = formatName(typedVal);
             } else {
-                const promptedName = prompt(`Enter your Name for ${provider} Sign In:`, "");
-                userName = (promptedName && promptedName.trim()) ? formatName(promptedName) : `Student (${provider})`;
+                const promptedName = prompt(`Please enter your Name or Email to complete ${provider} Sign In:`, "");
+                if (!promptedName || !promptedName.trim()) {
+                    showNotification(`❌ ${provider} Sign In cancelled: Name or Email is required.`, false);
+                    return;
+                }
+                userName = formatName(promptedName);
             }
 
             const userObj = {
@@ -260,21 +254,31 @@
             executeSignInRedirect(userObj);
         }
 
-        function instantDemoSignIn(role) {
-            const userObj = {
-                name: role === 'Student' ? 'Alex Smith' : 'Dr. Faculty Admin',
-                id: role === 'Student' ? 'STU-2026' : 'ADM-101',
-                role: role,
-                authenticated: true,
-                email: role === 'Student' ? 'alex@university.edu' : 'admin@university.edu'
-            };
-            executeSignInRedirect(userObj);
-        }
-
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const rawIdentifier = document.getElementById('authIdentifier').value.trim() || "Student User";
+            const rawIdentifier = document.getElementById('authIdentifier').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
             const role = document.getElementById('loginRole').value || "student";
+
+            // Strict Validation Checks
+            if (!rawIdentifier || rawIdentifier.length < 2) {
+                showNotification("❌ Please enter your Student Name, ID, or Email.", false);
+                document.getElementById('authIdentifier').focus();
+                return;
+            }
+
+            if (!password) {
+                showNotification("❌ Please enter your Password to sign in.", false);
+                document.getElementById('authPassword').focus();
+                return;
+            }
+
+            if (role === 'admin' && password !== 'admin123' && password !== '1234') {
+                showNotification("❌ Invalid Admin Password! (Default Admin Pass: <strong>admin123</strong>)", false);
+                document.getElementById('authPassword').focus();
+                return;
+            }
+
             const displayName = formatName(rawIdentifier);
 
             const userObj = {
@@ -290,9 +294,23 @@
 
         document.getElementById('signupForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const fullName = document.getElementById('regFullName').value.trim() || "New Student";
-            const email = document.getElementById('regEmail').value.trim() || "student@gmail.com";
-            const course = document.getElementById('regCourse').value || "B.Tech Computer Science";
+            const fullName = document.getElementById('regFullName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const course = document.getElementById('regCourse').value;
+            const password = document.getElementById('regPassword').value.trim();
+
+            if (!fullName) {
+                showNotification("❌ Please enter your Full Name.", false);
+                return;
+            }
+            if (!email || !email.includes('@')) {
+                showNotification("❌ Please enter a valid Email Address.", false);
+                return;
+            }
+            if (!password || password.length < 4) {
+                showNotification("❌ Password must be at least 4 characters long.", false);
+                return;
+            }
 
             const userObj = {
                 name: formatName(fullName),

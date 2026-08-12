@@ -172,8 +172,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dashboardLoginForm) {
         dashboardLoginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const identifier = document.getElementById('dashAuthIdentifier').value.trim() || "Student";
+            const identifier = document.getElementById('dashAuthIdentifier').value.trim();
+            const password = document.getElementById('dashAuthPassword').value.trim();
             const role = document.getElementById('dashLoginRole').value || "student";
+            const modalAlert = document.getElementById('modalAlertBox');
+
+            if (!identifier) {
+                if (modalAlert) {
+                    modalAlert.style.display = 'block';
+                    modalAlert.style.background = 'rgba(239,68,68,0.2)';
+                    modalAlert.style.color = '#fca5a5';
+                    modalAlert.textContent = "❌ Please enter your ID or Email.";
+                }
+                return;
+            }
+
+            if (!password) {
+                if (modalAlert) {
+                    modalAlert.style.display = 'block';
+                    modalAlert.style.background = 'rgba(239,68,68,0.2)';
+                    modalAlert.style.color = '#fca5a5';
+                    modalAlert.textContent = "❌ Please enter your Password.";
+                }
+                return;
+            }
+
+            if (role === 'admin' && password !== 'admin123' && password !== '1234') {
+                if (modalAlert) {
+                    modalAlert.style.display = 'block';
+                    modalAlert.style.background = 'rgba(239,68,68,0.2)';
+                    modalAlert.style.color = '#fca5a5';
+                    modalAlert.textContent = "❌ Invalid Admin Password (Default: admin123)";
+                }
+                return;
+            }
+
             const displayName = formatName(identifier);
 
             const userObj = {
@@ -187,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('eduquery_user', JSON.stringify(userObj));
             updateUserSessionUI();
             if (loginModal) loginModal.classList.remove('active');
-            appendBotMessage(`✅ Sign In Verified! Welcome, ${userObj.name}. How can I assist you today?`, "General", 100.0, false, []);
+            appendBotMessage(`✅ Credentials Verified! Welcome, ${userObj.name}.`, "General", 100.0, false, []);
         });
     }
 
@@ -729,7 +762,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typedVal) {
             userName = formatName(typedVal);
         } else {
-            userName = role === 'student' ? 'Alex Smith' : 'Dr. Faculty Admin';
+            const prompted = prompt("Please enter your Student / Admin Name:", "");
+            if (!prompted || !prompted.trim()) return;
+            userName = formatName(prompted);
         }
 
         const userObj = {
@@ -743,7 +778,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('eduquery_user', JSON.stringify(userObj));
         updateUserSessionUI();
         if (loginModal) loginModal.classList.remove('active');
-        appendBotMessage(`🚀 Direct Access Granted! Welcome, ${userObj.name}.`, "General", 100.0, false, []);
+        appendBotMessage(`🚀 Access Granted! Welcome, ${userObj.name}.`, "General", 100.0, false, []);
     };
 
     window.quickSocialLogin = (provider) => {
@@ -753,7 +788,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typedVal) {
             userName = formatName(typedVal);
         } else {
-            userName = `Student (${provider})`;
+            const prompted = prompt(`Please enter your Name or Email for ${provider} Sign In:`, "");
+            if (!prompted || !prompted.trim()) return;
+            userName = formatName(prompted);
         }
 
         const userObj = {
@@ -768,6 +805,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('eduquery_user', JSON.stringify(userObj));
         updateUserSessionUI();
         if (loginModal) loginModal.classList.remove('active');
-        appendBotMessage(`Authenticated via ${provider}! Welcome, ${userObj.name}. How can I assist you today?`, "General", 100.0, false, []);
+        appendBotMessage(`Authenticated via ${provider}! Welcome, ${userObj.name}.`, "General", 100.0, false, []);
     };
 });
