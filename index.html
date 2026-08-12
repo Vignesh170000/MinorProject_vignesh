@@ -7,7 +7,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Root static path for direct file viewing -->
@@ -30,16 +30,19 @@
                 <div class="brand-info">
                     <h2>EduQuery AI</h2>
                     <span class="status-badge" id="serverStatusBadge">
-                        <span class="status-dot"></span> Ready & Interactive
+                        <span class="status-dot"></span> Guided Platform Ready
                     </span>
                 </div>
             </div>
 
-            <!-- Sidebar Auth Button -->
-            <div class="sidebar-auth-box">
+            <!-- Sidebar Auth & Guided Direct Links -->
+            <div class="sidebar-auth-box" style="display:flex; flex-direction:column; gap:8px;">
                 <button id="sidebarLoginBtn" class="btn-sidebar-login" onclick="document.getElementById('loginModal').classList.add('active')">
-                    <i class="fa-solid fa-user-lock"></i> <span>Portal Login</span>
+                    <i class="fa-solid fa-user-lock"></i> <span>Portal Password Login</span>
                 </button>
+                <a href="login.html" class="btn-secondary" style="text-decoration:none; font-size:0.78rem;">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Full Auth Portal
+                </a>
             </div>
 
             <!-- Search Sidebar -->
@@ -83,7 +86,7 @@
             <header class="chat-header">
                 <div class="chat-header-title">
                     <h2>Student Helpdesk AI Chatbot</h2>
-                    <p>Interactive Student Query Portal & NLP Engine</p>
+                    <p>Interactive Guided Academic Platform & NLP Engine</p>
                 </div>
                 <div class="chat-actions">
                     <!-- Prominent Header Login Button -->
@@ -132,7 +135,7 @@
                             <span class="timestamp" id="initTime">12:00 PM</span>
                         </div>
                         <div class="message-text">
-                            Hello! Welcome to the Student Query Portal. 👋<br><br>
+                            Hello! Welcome to the Guided Student Query Platform. 👋<br><br>
                             I can answer your questions regarding <strong>Courses, Fee Structures, Class Timings, Admission Criteria, Hostel Facilities, and Helpdesk Contacts</strong>.<br><br>
                             Click any quick question below, or type your query in the input box!
                         </div>
@@ -184,10 +187,10 @@
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card auth-modal-card">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-lock"></i> Portal Login & Authentication</h3>
+                <h3><i class="fa-solid fa-lock"></i> Guided Platform Authentication</h3>
                 <button class="close-modal" id="closeLoginModalBtn">&times;</button>
             </div>
-            <div class="modal-body" style="gap:16px;">
+            <div class="modal-body" style="gap:14px;">
                 <div class="auth-tabs">
                     <button class="auth-tab active" id="modalStudentTabBtn" onclick="switchDashboardAuthTab('student')">
                         <i class="fa-solid fa-user-graduate"></i> Student Login
@@ -197,50 +200,55 @@
                     </button>
                 </div>
 
+                <div id="modalAlertBox" style="display:none; padding:8px 12px; border-radius:6px; font-size:0.8rem; text-align:center;"></div>
+
                 <form id="dashboardLoginForm" class="auth-form">
                     <input type="hidden" id="dashLoginRole" value="student">
                     <div class="input-group">
-                        <label for="dashAuthIdentifier"><i class="fa-solid fa-envelope"></i> ID or Email</label>
+                        <label for="dashAuthIdentifier"><i class="fa-solid fa-user"></i> Name or Email</label>
                         <div class="input-field-wrapper">
-                            <input type="text" id="dashAuthIdentifier" placeholder="e.g. STU-2026 or student@university.edu" required>
+                            <input type="text" id="dashAuthIdentifier" placeholder="e.g. Alex Smith or alex@university.edu" required>
                         </div>
                     </div>
                     <div class="input-group">
                         <label for="dashAuthPassword"><i class="fa-solid fa-key"></i> Password</label>
                         <div class="input-field-wrapper">
-                            <input type="password" id="dashAuthPassword" placeholder="Enter password" required>
+                            <input type="password" id="dashAuthPassword" placeholder="Enter password (default: student123)" required>
                         </div>
+                        <span style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">
+                            Default Student Pass: <strong style="color:#6366f1">student123</strong> | Admin: <strong style="color:#8b5cf6">admin123</strong>
+                        </span>
                     </div>
                     <button type="submit" class="auth-submit-btn">
-                        <span>Login & Continue</span> <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>Verify Password & Launch</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
                     </button>
                 </form>
 
-                <!-- Social OAuth Logins -->
+                <!-- Direct Social & Guided Platform Entry -->
                 <div class="auth-divider">
-                    <span>OR CONTINUE WITH</span>
+                    <span>OR DIRECT SINGLE SIGN-ON</span>
                 </div>
 
                 <div class="social-logins">
-                    <button type="button" class="btn-social btn-social-google" onclick="quickSocialLogin('Google/Email')">
-                        <i class="fa-brands fa-google"></i> Email / Google
+                    <button type="button" class="btn-social btn-social-google" onclick="quickSocialLogin('Google')">
+                        <i class="fa-brands fa-google"></i> Google Direct Sign-In
                     </button>
                     <button type="button" class="btn-social btn-social-apple" onclick="quickSocialLogin('Apple')">
-                        <i class="fa-brands fa-apple"></i> Apple
+                        <i class="fa-brands fa-apple"></i> Apple Direct Sign-In
                     </button>
                     <button type="button" class="btn-social btn-social-github" onclick="quickSocialLogin('GitHub')">
-                        <i class="fa-brands fa-github"></i> GitHub
+                        <i class="fa-brands fa-github"></i> GitHub Direct Sign-In
                     </button>
                 </div>
 
-                <div class="demo-logins" style="margin-top: 6px; padding-top: 10px;">
-                    <span class="demo-label"><i class="fa-solid fa-bolt"></i> 1-Click Quick Demo Login:</span>
+                <div class="demo-logins" style="margin-top: 4px; padding-top: 8px;">
+                    <span class="demo-label"><i class="fa-solid fa-rocket"></i> Direct Guided Platform Access:</span>
                     <div class="demo-buttons">
                         <button type="button" class="demo-btn" onclick="quickDashboardLogin('student')">
-                            <i class="fa-solid fa-user-graduate"></i> Demo Student
+                            <i class="fa-solid fa-circle-play"></i> Student Guided Mode
                         </button>
                         <button type="button" class="demo-btn admin" onclick="quickDashboardLogin('admin')">
-                            <i class="fa-solid fa-user-shield"></i> Demo Admin
+                            <i class="fa-solid fa-shield-halved"></i> Admin Guided Mode
                         </button>
                     </div>
                 </div>

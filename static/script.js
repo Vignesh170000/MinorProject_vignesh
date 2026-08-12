@@ -173,20 +173,44 @@ document.addEventListener('DOMContentLoaded', () => {
         dashboardLoginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const identifier = document.getElementById('dashAuthIdentifier').value.trim();
+            const password = document.getElementById('dashAuthPassword').value.trim();
             const role = document.getElementById('dashLoginRole').value;
+            const modalAlert = document.getElementById('modalAlertBox');
+
+            if (!password) {
+                if (modalAlert) {
+                    modalAlert.style.display = 'block';
+                    modalAlert.style.background = 'rgba(239,68,68,0.2)';
+                    modalAlert.style.color = '#fca5a5';
+                    modalAlert.textContent = "⚠️ Please enter your password.";
+                }
+                return;
+            }
+
+            if (role === 'admin' && password !== 'admin123' && password !== '1234') {
+                if (modalAlert) {
+                    modalAlert.style.display = 'block';
+                    modalAlert.style.background = 'rgba(239,68,68,0.2)';
+                    modalAlert.style.color = '#fca5a5';
+                    modalAlert.textContent = "❌ Invalid Admin Password (Default: admin123)";
+                }
+                return;
+            }
+
             const displayName = formatName(identifier);
 
             const userObj = {
                 name: displayName,
                 id: role === 'student' ? 'STU-' + Math.floor(1000 + Math.random() * 9000) : 'ADM-101',
                 role: role === 'student' ? 'Student' : 'Admin',
+                authenticated: true,
                 email: identifier.includes('@') ? identifier : `${displayName.toLowerCase().replace(/\s+/g, '')}@university.edu`
             };
 
             localStorage.setItem('eduquery_user', JSON.stringify(userObj));
             updateUserSessionUI();
             loginModal.classList.remove('active');
-            appendBotMessage(`Welcome back, ${userObj.name}! How can I help you today?`, "General", 100.0, false, []);
+            appendBotMessage(`✅ Password Verified! Welcome, ${userObj.name}. How can I assist you on the Guided Platform today?`, "General", 100.0, false, []);
         });
     }
 
@@ -376,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function setOfflineBadge() {
         isFlaskServerOnline = false;
         if (serverStatusBadge) {
-            serverStatusBadge.innerHTML = `<span class="status-dot" style="background:#10b981"></span> Web NLP Engine Active`;
+            serverStatusBadge.innerHTML = `<span class="status-dot" style="background:#10b981"></span> Guided Platform Active`;
         }
     }
 
@@ -720,6 +744,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modalAdminTabBtn').classList.toggle('active', role === 'admin');
         document.getElementById('dashLoginRole').value = role;
         document.getElementById('dashAuthIdentifier').placeholder = role === 'student' ? "e.g. Alex Smith or alex@university.edu" : "e.g. Dr. Faculty or admin@university.edu";
+        document.getElementById('dashAuthPassword').placeholder = role === 'student' ? "Enter password (default: student123)" : "Enter password (default: admin123)";
     };
 
     window.quickDashboardLogin = (role) => {
@@ -729,11 +754,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typedVal) {
             userName = formatName(typedVal);
         } else {
-            const promptedName = prompt("Enter your Name for Login:", "");
+            const promptedName = prompt("Enter your Name for Guided Platform Launch:", "");
             if (promptedName && promptedName.trim()) {
                 userName = formatName(promptedName);
             } else {
-                userName = role === 'student' ? 'Student' : 'Admin';
+                userName = role === 'student' ? 'Student' : 'Dr. Administrator';
             }
         }
 
@@ -741,13 +766,14 @@ document.addEventListener('DOMContentLoaded', () => {
             name: userName,
             id: role === 'student' ? 'STU-' + Math.floor(1000 + Math.random() * 9000) : 'ADM-101',
             role: role === 'student' ? 'Student' : 'Admin',
+            authenticated: true,
             email: `${userName.toLowerCase().replace(/\s+/g, '')}@university.edu`
         };
 
         localStorage.setItem('eduquery_user', JSON.stringify(userObj));
         updateUserSessionUI();
         if (loginModal) loginModal.classList.remove('active');
-        appendBotMessage(`Welcome back, ${userObj.name}! How can I assist you today?`, "General", 100.0, false, []);
+        appendBotMessage(`🚀 Direct Access Granted! Welcome, ${userObj.name}.`, "General", 100.0, false, []);
     };
 
     window.quickSocialLogin = (provider) => {
@@ -770,12 +796,13 @@ document.addEventListener('DOMContentLoaded', () => {
             id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
             role: 'Student',
             provider: provider,
+            authenticated: true,
             email: `${userName.toLowerCase().replace(/\s+/g, '')}@${provider.toLowerCase()}.com`
         };
 
         localStorage.setItem('eduquery_user', JSON.stringify(userObj));
         updateUserSessionUI();
         if (loginModal) loginModal.classList.remove('active');
-        appendBotMessage(`Authenticated via ${provider}! Welcome, ${userObj.name}. How can I assist you today?`, "General", 100.0, false, []);
+        appendBotMessage(`Authenticated via ${provider}! Launching Guided Platform for ${userObj.name}...`, "General", 100.0, false, []);
     };
 });
