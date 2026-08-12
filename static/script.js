@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const exportChatBtn = document.getElementById('exportChatBtn');
     const clearChatBtn = document.getElementById('clearChatBtn');
     const logoutBtn = document.getElementById('logoutBtn');
+    const openLoginModalBtn = document.getElementById('openLoginModalBtn');
+    const closeLoginModalBtn = document.getElementById('closeLoginModalBtn');
+    const loginModal = document.getElementById('loginModal');
+    const dashboardLoginForm = document.getElementById('dashboardLoginForm');
     const exitChatBtn = document.getElementById('exitChatBtn');
     const voiceBtn = document.getElementById('voiceBtn');
     const viewDatasetBtn = document.getElementById('viewDatasetBtn');
@@ -30,17 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const themes = ['theme-dark', 'theme-cyber', 'theme-light'];
     let isFlaskServerOnline = false;
 
-    // User Session Check
-    const savedUserJson = localStorage.getItem('eduquery_user');
-    if (savedUserJson) {
-        try {
-            const userObj = JSON.parse(savedUserJson);
-            if (userProfileBadge && userNameDisplay) {
-                userNameDisplay.textContent = `${userObj.name} (${userObj.role || 'Student'})`;
-                userProfileBadge.style.display = 'flex';
-            }
-        } catch(e) {}
-    }
+    // Check User Session State
+    updateUserSessionUI();
 
     // Default Knowledge Base Dataset
     let fullDataset = [
@@ -128,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initKnowledgeBase();
 
     // ----------------------------------------------------
-    // Event Listeners
+    // Event Listeners & Handlers
     // ----------------------------------------------------
 
     chatForm.addEventListener('submit', (e) => {
@@ -145,11 +140,51 @@ document.addEventListener('DOMContentLoaded', () => {
         appendBotMessage("Chat history cleared. How can I assist you today?", "General", 100.0, false, []);
     });
 
+    // Login Modal Controls
+    if (openLoginModalBtn) {
+        openLoginModalBtn.addEventListener('click', () => {
+            loginModal.classList.add('active');
+        });
+    }
+
+    if (closeLoginModalBtn) {
+        closeLoginModalBtn.addEventListener('click', () => {
+            loginModal.classList.remove('active');
+        });
+    }
+
+    if (loginModal) {
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) loginModal.classList.remove('active');
+        });
+    }
+
+    if (dashboardLoginForm) {
+        dashboardLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('dashAuthIdentifier').value.trim();
+            const role = document.getElementById('dashLoginRole').value;
+            
+            const userObj = {
+                name: identifier.split('@')[0] || identifier,
+                id: role === 'student' ? 'STU-2026' : 'ADM-101',
+                role: role === 'student' ? 'Student' : 'Admin',
+                email: identifier.includes('@') ? identifier : `${identifier}@university.edu`
+            };
+
+            localStorage.setItem('eduquery_user', JSON.stringify(userObj));
+            updateUserSessionUI();
+            loginModal.classList.remove('active');
+            appendBotMessage(`Welcome back, ${userObj.name}! How can I help you today?`, "General", 100.0, false, []);
+        });
+    }
+
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             if (confirm("Are you sure you want to log out?")) {
                 localStorage.removeItem('eduquery_user');
-                window.location.href = 'login.html';
+                updateUserSessionUI();
+                appendBotMessage("You have logged out. Browsing as Guest.", "General", 100.0, false, []);
             }
         });
     }
@@ -253,8 +288,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------
-    // Functions & NLP Matching Engine
+    // Helper Functions
     // ----------------------------------------------------
+
+    function updateUserSessionUI() {
+        const savedUserJson = localStorage.getItem('eduquery_user');
+        if (savedUserJson) {
+            try {
+                const userObj = JSON.parse(savedUserJson);
+                if (userProfileBadge && userNameDisplay) {
+                    userNameDisplay.textContent = `${userObj.name} (${userObj.role || 'Student'})`;
+                    userProfileBadge.style.display = 'flex';
+                }
+                if (openLoginModalBtn) openLoginModalBtn.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'flex';
+            } catch(e) {}
+        } else {
+            if (userProfileBadge) userProfileBadge.style.display = 'none';
+            if (openLoginModalBtn) openLoginModalBtn.style.display = 'flex';
+            if (logoutBtn) logoutBtn.style.display = 'none';
+        }
+    }
 
     function getCurrentTime() {
         const now = new Date();
@@ -623,7 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   .replace(/'/g, "&#039;");
     }
 
-    // Global Window Helpers
+    // Window Global Helpers
     window.sendQuickQuery = (query) => {
         sendMessage(query);
     };
@@ -648,5 +702,25 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.innerHTML = `<i class="fa-solid fa-check"></i> Thank you!`;
         btn.style.color = '#10b981';
         btn.style.borderColor = '#10b981';
+    };
+
+    window.switchDashboardAuthTab = (role) => {
+        document.getElementById('modalStudentTabBtn').classList.toggle('active', role === 'student');
+        document.getElementById('modalAdminTabBtn').classList.toggle('active', role === 'admin');
+        document.getElementById('dashLoginRole').value = role;
+        document.getElementById('dashAuthIdentifier').placeholder = role === 'student' ? "e.g. STU-2026 or student@university.edu" : "e.g. ADM-101 or admin@university.edu";
+    };
+
+    window.quickDashboardLogin = (role) => {
+        const userObj = {
+            name: role === 'student' ? 'Vignesh R' : 'Dr. Administrator',
+            id: role === 'student' ? 'STU-2026' : 'ADM-101',
+            role: role === 'student' ? 'Student' : 'Admin',
+            email: role === 'student' ? 'vignesh@university.edu' : 'admin@university.edu'
+        };
+        localStorage.setItem('eduquery_user', JSON.stringify(userObj));
+        updateUserSessionUI();
+        loginModal.classList.remove('active');
+        appendBotMessage(`Welcome back, ${userObj.name}! How can I assist you today?`, "General", 100.0, false, []);
     };
 });

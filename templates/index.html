@@ -79,7 +79,12 @@
                     <p>Interactive Student Query Portal & NLP Engine</p>
                 </div>
                 <div class="chat-actions">
-                    <!-- Logged in User Badge -->
+                    <!-- Login Button (Visible when NOT logged in) -->
+                    <button id="openLoginModalBtn" class="btn-login-header">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> <span>Log In</span>
+                    </button>
+
+                    <!-- Logged in User Badge (Visible when logged in) -->
                     <div class="user-profile-badge" id="userProfileBadge" style="display: none;">
                         <i class="fa-solid fa-user-check"></i>
                         <span id="userNameDisplay">Student</span>
@@ -97,7 +102,7 @@
                     <button id="clearChatBtn" class="icon-btn" title="Clear Chat History">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
-                    <button id="logoutBtn" class="icon-btn" title="Logout Session">
+                    <button id="logoutBtn" class="icon-btn" title="Logout Session" style="display: none;">
                         <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                     <button id="exitChatBtn" class="btn-danger" title="Exit Session">
@@ -166,6 +171,57 @@
                 </form>
             </footer>
         </main>
+    </div>
+
+    <!-- Login Modal directly inside Main Dashboard -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card auth-modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-lock"></i> Portal Login & Authentication</h3>
+                <button class="close-modal" id="closeLoginModalBtn">&times;</button>
+            </div>
+            <div class="modal-body" style="gap:20px;">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="modalStudentTabBtn" onclick="switchDashboardAuthTab('student')">
+                        <i class="fa-solid fa-user-graduate"></i> Student Login
+                    </button>
+                    <button class="auth-tab" id="modalAdminTabBtn" onclick="switchDashboardAuthTab('admin')">
+                        <i class="fa-solid fa-user-gear"></i> Admin / Faculty
+                    </button>
+                </div>
+
+                <form id="dashboardLoginForm" class="auth-form">
+                    <input type="hidden" id="dashLoginRole" value="student">
+                    <div class="input-group">
+                        <label for="dashAuthIdentifier"><i class="fa-solid fa-envelope"></i> ID or Email</label>
+                        <div class="input-field-wrapper">
+                            <input type="text" id="dashAuthIdentifier" placeholder="e.g. STU-2026 or student@university.edu" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="dashAuthPassword"><i class="fa-solid fa-key"></i> Password</label>
+                        <div class="input-field-wrapper">
+                            <input type="password" id="dashAuthPassword" placeholder="Enter password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Login & Continue</span> <i class="fa-solid fa-right-to-bracket"></i>
+                    </button>
+                </form>
+
+                <div class="demo-logins" style="margin-top: 10px; padding-top: 12px;">
+                    <span class="demo-label"><i class="fa-solid fa-bolt"></i> 1-Click Quick Demo Login:</span>
+                    <div class="demo-buttons">
+                        <button type="button" class="demo-btn" onclick="quickDashboardLogin('student')">
+                            <i class="fa-solid fa-user-graduate"></i> Demo Student
+                        </button>
+                        <button type="button" class="demo-btn admin" onclick="quickDashboardLogin('admin')">
+                            <i class="fa-solid fa-user-shield"></i> Demo Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Knowledge Base Modal -->
